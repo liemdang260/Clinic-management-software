@@ -1,28 +1,47 @@
 const express = require('express')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
- const {connectDB2} = require('../../connectDB/db')
-exports.handleLogin = (req,res)=>{
+const { enCryptPassword, generateAccessToken } = require('./authentication.methods')
+const { connectDB2 } = require('../../connectDB/db')
+const { sequelize, ACCOUNT, EMPLOYEE } = require('../../models')
+exports.handleLogin = async (req, res) => {
     let username = req.body.username;
-    let password = req.body.password;
-    //  connectDB2.findOne({
-    //      users: username,
-    //      passwords: password
-    //  })
-    //  .then(data=>{
-    //      if(data){
-    //         let token = jwt.sign({
-    //              _id: data._id},'mk')
-    //          return res.status(200).json({
-    //              message: 'dang nhap thanh cong',
-    //              token: token
-    //          })
-    //      }else{
-    //         return res.status(400).json('dang nhap that bai')
-    //      }
-    //  })
-    //  .catch(err=>{
-    //      res.status(500).json(`loi sever`)
-    //  })
-    console.log(username,password)
+    let password = enCryptPassword(req.body.password);
+
+    try {
+        const account = await ACCOUNT.findAll({
+            where: {
+                USERNAME: username,
+            },
+            include: [EMPLOYEE]
+        })
+        if (!account || account.length == 0)
+            return res.status(404).send('Khong tim thay user!')
+            console.log(password, account[0].PASSWORD)
+        if (password.localeCompare(account[0].PASSWORD) != 0)
+            return res.status(401).send('Mat khau khong dung!')
+        let access_token
+        try {
+            access_token = await generateAccessToken({
+                employee_id: account[0].EMPLOYEE_ID,
+                username: account[0].USERNAME,
+                role: account[0].ROLE,
+            })
+            if (!access_token) throw Error
+        } catch (error) {
+            console.log('Loi tao access token')
+            throw Error
+        }
+
+        const data = {
+            employee_id: account[0].EMPLOYEE_ID,
+            employee_name: account[0].EMPLOYEE.EMPLOYEE_NAME,
+            username: account[0].USERNAME,
+            is_active: account[0].ISACTIVE,
+            role: account[0].ROLE,
+            access_token: access_token
+        }
+        return res.json(data)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Loi server!')
+    }
 }
