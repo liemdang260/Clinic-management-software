@@ -1,5 +1,4 @@
-const express = require('express')
-const { sequelize , EMPLOYEE } = require('../../models')
+const { sequelize , EMPLOYEE, SERVICE } = require('../../models')
 exports.getEMPLOYEE = async (req, res) =>{
         try{
              let employee = await EMPLOYEE.findAll({
@@ -22,4 +21,19 @@ exports.deleteEmployee = async(req,res)=>{
     }catch(e){  
         return res.status(500).send('Xoa khong thanh cong!')
     }
+}
+
+exports.changeMedicalExaminationFee = async (req,res)=>{
+    let newFee = {
+        id:req.body.id,
+        fee:req.body.fee
+    }
+    let fee = await SERVICE.findOne({
+        where:{
+            SERVICE_ID:newFee.id
+        }
+    })
+    fee.FEE = newFee.fee
+    await fee.save();
+    res.send(fee)
 }
