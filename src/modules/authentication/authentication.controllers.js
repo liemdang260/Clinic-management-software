@@ -1,6 +1,4 @@
-const express = require('express')
 const { enCryptPassword, generateAccessToken } = require('./authentication.methods')
-const { connectDB2 } = require('../../connectDB/db')
 const { sequelize, ACCOUNT, EMPLOYEE } = require('../../models')
 exports.handleLogin = async (req, res) => {
     let username = req.body.username;
