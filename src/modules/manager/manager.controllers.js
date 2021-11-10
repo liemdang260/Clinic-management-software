@@ -29,7 +29,7 @@ exports.deleteEmployee = async(req,res)=>{
 
 exports.changeMedicalExaminationFee = async (req,res)=>{
     let newFee = {
-        id:req.body.EMPLOYEE_ID,
+        id:req.body.id,
         fee:req.body.fee
     }
     let fee = await SERVICE.findOne({

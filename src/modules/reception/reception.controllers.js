@@ -1,6 +1,6 @@
 const express = require('express')
 const { sequelize, APPOINTMENT } = require('../../models')
-exports.createReception = async (req, res) => {
+exports.createAppointment = async (req, res) => {
     try {
         if (!req.body) {
             res.status(400).send({
@@ -8,19 +8,15 @@ exports.createReception = async (req, res) => {
             })
         }
         let id = req.body.PATIENT_ID
-        let reception = DIAGNOSTIC.findOne({
+        let reception = APPOINTMENT.findOne({
             where: { PATIENT_ID: id }
         })
         if (!reception) {
             reception = new reception({
                 DIAGNOSTIC_ID: req.body.DIAGNOSTIC_ID,
-                CREATE_AT: req.body.CREATE_AT,
                 PATIENT_ID: req.body.PATIENT_ID,
                 DOCTOR_ID: req.body.DOCTOR_ID,
-                SYMPTOM: req.body.SYMPTOM,
-                PRESCRIPTION: req.body.PRESCRIPTION,
-                DIAGNOSTIC_FEE: req.body.DIAGNOSTIC_FEE,
-                RE_EXAMINATION: req.body.RE_EXAMINATION
+                TIMES: req.body.TIMES,
             })
             reception.save()
         }
@@ -47,16 +43,16 @@ exports.updateAppointment = async (req, res) => {
     try {
         let id = req.params.id
         console.log(id)
-        let reception = await APPOINTMENT.findOne({
+        let appointment = await APPOINTMENT.findOne({
             where: { APPOINTMENT_ID: id }
         })
         console.log(req.body.DOCTOR_ID)
-        if (reception) {
-            reception.DOCTOR_ID = req.body.DOCTOR_ID
-            reception.TIMES = new Date(req.body.TIMES)
+        if (appointment) {
+            appointment.DOCTOR_ID = req.body.DOCTOR_ID
+            appointment.TIMES = new Date(req.body.TIMES)
             //new Date(req.body.TIMES)
-            reception.PATIENT_ID = req.body.PATIENT_ID
-            await reception.save()
+            appointment.PATIENT_ID = req.body.PATIENT_ID
+            await appointment.save()
             return res.status(200).send('Cập nhật thành công!')
 
         }
@@ -68,11 +64,11 @@ exports.updateAppointment = async (req, res) => {
 exports.deleteAppointment = async (req, res) => {
     try {
         let id = req.params.id
-        let reception = await APPOINTMENT.findOne({
+        let appointment = await APPOINTMENT.findOne({
             where: { APPOINTMENT_ID: id }
         })
-        if (reception) {
-            await reception.destroy()
+        if (appointment) {
+            await appointment.destroy()
             return res.send('Xóa thành công!')
         }
         else {

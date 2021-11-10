@@ -1,7 +1,7 @@
-const receptionRouter = require('../reception/reception.controllers')
+const appointmentRouter = require('../reception/reception.controllers')
 const router = require('express').Router()
-router.post('/',receptionRouter.createReception)
-router.get('/',receptionRouter.getAllAppointment)
-router.put('/:id',receptionRouter.updateAppointment)
-router.delete('/:id',receptionRouter.deleteAppointment)
+router.post('/',appointmentRouter.createAppointment)
+router.get('/',appointmentRouter.getAllAppointment)
+router.put('/:id',appointmentRouter.updateAppointment)
+router.delete('/:id',appointmentRouter.deleteAppointment)
 module.exports = router
