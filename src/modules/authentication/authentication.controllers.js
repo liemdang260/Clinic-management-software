@@ -13,14 +13,15 @@ exports.handleLogin = async (req, res) => {
         })
         if (!account || account.length == 0)
             return res.status(404).send('Khong tim thay user!')
-            console.log(password, account[0].PASSWORD)
         if (password.localeCompare(account[0].PASSWORD) != 0)
             return res.status(401).send('Mat khau khong dung!')
         let access_token
         try {
             access_token = await generateAccessToken({
                 employee_id: account[0].EMPLOYEE_ID,
+                employee_name: account[0].EMPLOYEE.EMPLOYEE_NAME,
                 username: account[0].USERNAME,
+                is_active: account[0].ISACTIVE,
                 role: account[0].ROLE,
             })
             if (!access_token) throw Error
@@ -30,11 +31,6 @@ exports.handleLogin = async (req, res) => {
         }
 
         const data = {
-            employee_id: account[0].EMPLOYEE_ID,
-            employee_name: account[0].EMPLOYEE.EMPLOYEE_NAME,
-            username: account[0].USERNAME,
-            is_active: account[0].ISACTIVE,
-            role: account[0].ROLE,
             access_token: access_token
         }
         return res.json(data)
