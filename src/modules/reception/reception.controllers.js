@@ -8,17 +8,17 @@ exports.createAppointment = async (req, res) => {
             })
         }
         let id = req.body.PATIENT_ID
-        let reception = APPOINTMENT.findOne({
+        let appointment = APPOINTMENT.findOne({
             where: { PATIENT_ID: id }
         })
-        if (!reception) {
-            reception = new reception({
-                DIAGNOSTIC_ID: req.body.DIAGNOSTIC_ID,
+        if (!appointment) {
+            appointment = new reception({
+                APPOINTMENT_ID: req.body.APPOINTMENT_ID,
                 PATIENT_ID: req.body.PATIENT_ID,
                 DOCTOR_ID: req.body.DOCTOR_ID,
                 TIMES: req.body.TIMES,
             })
-            reception.save()
+            appointment.save()
         }
         else {
             return res.send('ID đã có rồi!')
@@ -30,10 +30,10 @@ exports.createAppointment = async (req, res) => {
 }
 exports.getAllAppointment = async (req, res) => {
     try {
-        let reception = await APPOINTMENT.findAll({
+        let appointment = await APPOINTMENT.findAll({
             //attributes: []
         })
-        return res.json(reception)
+        return res.json(appointment)
     } catch (e) {
         console.log(e)
         return res.status(500).send('Lỗi sever!')
