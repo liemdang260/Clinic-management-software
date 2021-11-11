@@ -6,20 +6,24 @@ exports.getEMPLOYEE = async (req, res) =>{
              })
              return res.json(employee)
         }catch(e){
-          return res.status(500).send('Loi sever!')
+          return res.status(500).send('Lỗi sever!')
         }
 }
 exports.deleteEmployee = async(req,res)=>{
     try{
-        let id = req.id
-        let employee = EMPLOYEE.findOne({
-            where: {employee_id: id}
+        let id = req.params.id
+        let employee = await EMPLOYEE.findOne({
+            where: {EMPLOYEE_ID: id}
         })
         if(employee){
             await employee.destroy()
+            return res.send('Xóa thành công!')
         }
-    }catch(e){  
-        return res.status(500).send('Xoa khong thanh cong!')
+        else{
+            return res.status(404).send('Không có gì để xóa!')
+        }
+    }catch(e){  console.log(e)
+        return res.status(500).send('Lỗi sever!')
     }
 }
 
