@@ -7,10 +7,14 @@ const userRouter = require('../modules/user/user.router')
 const {isAuth} = require('../modules/authentication/authentication.middlewares')
 const {isManager} = require('../modules/manager/manager.middlewares')
 
+
+
 router.use((req,res,next)=>{
     console.log(req.method,req.url)
     return next();
 })
+
+router.use('/login',authenticationRouter)
 
 
 router.use(isAuth)
@@ -18,7 +22,7 @@ router.use('/users',userRouter)
 router.get('/',(req,res)=>{
     res.send("APP RUNNING AT PORT 9999")
 })
-router.use('/login',authenticationRouter)
+
 
 router.use('/manager', isManager,managerRouter)
 router.use('/reception',receptionRouter)
