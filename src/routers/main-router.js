@@ -4,26 +4,34 @@ const managerRouter = require('../modules/manager/manager.router')
 const receptionRouter = require('../modules/reception/reception.router')
 const userRouter = require('../modules/user/user.router')
 
-const {isAuth} = require('../modules/authentication/authentication.middlewares')
-const {isManager} = require('../modules/manager/manager.middlewares')
+const { isAuth } = require('../modules/authentication/authentication.middlewares')
+const { isManager } = require('../modules/manager/manager.middlewares')
 
 
 
-router.use((req,res,next)=>{
-    console.log(req.method,req.url)
+router.use((req, res, next) => {
+    console.log(req.method, req.url)
     return next();
 })
 
-router.use('/login',authenticationRouter)
+router.get('/', (req, res) => {
+    res.send(`APP IS RUNNING ON ${process.env.PORT}`)
+})
+
+router.get('/favicon.ico', () => {
+
+})
+
+router.use('/login', authenticationRouter)
 
 
 router.use(isAuth)
-router.use('/users',userRouter)
-router.get('/',(req,res)=>{
+
+router.get('/', (req, res) => {
     res.send("APP RUNNING AT PORT 9999")
 })
 
 
-router.use('/manager', isManager,managerRouter)
-router.use('/reception',receptionRouter)
+router.use('/manager', isManager, managerRouter)
+router.use('/reception', receptionRouter)
 module.exports = router
