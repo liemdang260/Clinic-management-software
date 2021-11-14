@@ -87,11 +87,9 @@ exports.updateAppointment = async (req, res) => {
         let appointment = await APPOINTMENT.findOne({
             where: { APPOINTMENT_ID: id }
         })
-        console.log(req.body.DOCTOR_ID)
         if (appointment) {
             appointment.DOCTOR_ID = req.body.DOCTOR_ID
-            appointment.TIMES = new Date(req.body.TIMES)
-            //new Date(req.body.TIMES)
+            appointment.TIMES = moment.utc(req.body.TIMES, 'DD/MM/YYYY h:mm:ss')
             appointment.PATIENT_ID = req.body.PATIENT_ID
             await appointment.save()
             return res.status(200).send('Cập nhật thành công!')
@@ -165,11 +163,12 @@ exports.updatePatient = async (req, res) => {
             where: { PATIENT_ID: id }
         })
         if (patient) {
-            patient.IDENTITY_NUMBER = req.body.IDENTITY_NUMBER
-            patient.PHONE = req.body.GENDER
+            patient.PATIENT_NAME = req.body.PATIENT_NAME,
+            patient.IDENTITY_NUMBER = req.body.IDENTITY_NUMBER,
+            patient.PHONE = req.body.PHONE,
+            patient.GENDER = req.body.GENDER,
             patient.DATE_OF_BIRTH = moment(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY')
             patient.ADDRESS = req.body.ADDRESS
-
             await patient.save()
             return res.status(200).send('Cập nhật thành công!')
         }
