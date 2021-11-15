@@ -1,6 +1,6 @@
 const { APPOINTMENT, PATIENT, DIAGNOSTIC } = require('../../models')
 const moment = require('moment')
-const { Op } = require("sequelize"); 
+const { Op } = require("sequelize");
 
 
 exports.createAppointment = async (req, res) => {

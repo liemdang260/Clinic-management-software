@@ -41,15 +41,15 @@ exports.getAllEmployee = async (req, res) => {
         return res.status(500).send('Lỗi sever!')
     }
 }
-exports.getEmployeeById = async(req,res) =>{
+exports.getEmployeeById = async (req, res) => {
     try {
         let id = req.params.id
         let employee = await EMPLOYEE.findOne({
-            where: {EMPLOYEE_ID: id}
+            where: { EMPLOYEE_ID: id }
         })
-        if(employee){
+        if (employee) {
             return res.json(employee)
-        }else{
+        } else {
             return res.status(404).send('Không có nhân viên này!')
         }
     } catch (error) {

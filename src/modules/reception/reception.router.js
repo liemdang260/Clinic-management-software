@@ -6,7 +6,7 @@ const router = require('express').Router()
 
 router.post('/appointment', receptionController.createAppointment)
 router.get('/appointment', receptionController.getAllAppointment)
-router.get('/appointment',receptionController.getAppointmentInDay) // chưa làm
+router.get('/appointment',receptionController.getAppointmentInDay) 
 router.put('/appointment/:id', receptionController.updateAppointment) 
 router.delete('/appointment/:id', receptionController.deleteAppointment)
 
@@ -15,7 +15,7 @@ router.delete('/appointment/:id', receptionController.deleteAppointment)
 router.post('/patient', receptionController.createPatient)
 router.get('/patient', authMiddleware.isAuth, receptionController.getAllPatient)
 router.get('/patient/:id',receptionController.getPatientById) 
-router.put('/patient/:id', receptionController.updatePatient) // chưa làm
+router.put('/patient/:id', receptionController.updatePatient) 
 router.delete('/patient/:id', receptionController.deletePatient)
 
 
