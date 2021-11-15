@@ -1,5 +1,7 @@
 const { APPOINTMENT, PATIENT, DIAGNOSTIC } = require('../../models')
 const moment = require('moment')
+const { Op } = require("sequelize"); 
+
 
 exports.createAppointment = async (req, res) => {
     try {
@@ -81,6 +83,25 @@ exports.getAllAppointment = async (req, res) => {
         return res.status(500).send('Lỗi sever!')
     }
 }
+exports.getAppointmentInDay = async (req, res) => {
+    try {
+        let fromday = req.body.fromday
+        let today = req.body.fromday
+        let appointment = await APPOINTMENT.findAll({
+            //where: { [Op.and]: [ { CREATE_AT: { [Op.gte]: fromday } }, { CREATE_AT: { [Op.lte]: today }} ] }
+            where: { CREATE_AT: { [Op.gte]: fromday } }
+        })
+        if (appointment) {
+            return res.json(appointment)
+        }
+        else {
+            return res.status(404).send('Không tìm thấy ngày cần tìm')
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Lỗi sever!')
+    }
+}
 exports.updateAppointment = async (req, res) => {
     try {
         let id = req.params.id
@@ -88,9 +109,9 @@ exports.updateAppointment = async (req, res) => {
             where: { APPOINTMENT_ID: id }
         })
         if (appointment) {
-            appointment.DOCTOR_ID = req.body.DOCTOR_ID
+            appointment.DOCTOR_ID = (req.body.DOCTOR_ID) ? req.body.DOCTOR_ID : appointment.DOCTOR_ID
             appointment.TIMES = moment.utc(req.body.TIMES, 'DD/MM/YYYY h:mm:ss')
-            appointment.PATIENT_ID = req.body.PATIENT_ID
+            appointment.PATIENT_ID = (req.body.PATIENT_ID) ? req.body.PATIENT_ID : appointment.PATIENT_ID
             await appointment.save()
             return res.status(200).send('Cập nhật thành công!')
 
@@ -141,7 +162,7 @@ exports.createPatient = async (req, res) => {
         } else {
             return res.status(409).send('Số CMND đã tồn tại')
         }
-        return res.status(200).send("Tạo thành công!")
+        return res.status(200).send('Tạo thành công!')
     } catch (error) {
         console.log(error)
         return res.status(500).send('Lỗi sever!')
@@ -153,7 +174,23 @@ exports.getAllPatient = async (req, res) => {
         })
         return res.json(patient)
     } catch (e) {
-        return res.status(500).send("Lỗi sever!")
+        return res.status(500).send('Lỗi sever!')
+    }
+}
+exports.getPatientById = async (req, res) => {
+    try {
+        let id = req.params.id
+        let patient = await PATIENT.findOne({
+            where: { PATIENT_ID: id }
+        })
+        if (patient) {
+            return res.json(patient)
+        } else {
+            return res.status(404).send('Không có bệnh nhân này!')
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Lỗi sever!')
     }
 }
 exports.updatePatient = async (req, res) => {
@@ -162,15 +199,38 @@ exports.updatePatient = async (req, res) => {
         let patient = await PATIENT.findOne({
             where: { PATIENT_ID: id }
         })
-        if (patient) {
-            patient.PATIENT_NAME = req.body.PATIENT_NAME,
-            patient.IDENTITY_NUMBER = req.body.IDENTITY_NUMBER,
-            patient.PHONE = req.body.PHONE,
-            patient.GENDER = req.body.GENDER,
+        let cmnd
+        let identityNumber = req.body.IDENTITY_NUMBER
+        //kiem tra cmnd co ton tai chua
+        const checkIdentity_number = async (condition) => {
+            try {
+                let oldIdentity_number = await PATIENT.findOne(condition)
+                if (!oldIdentity_number) {
+                    return null
+                }
+                return oldIdentity_number
+            } catch (error) {
+                console.log(error)
+                throw Error
+            }
+        }
+        try {
+            cmnd = await checkIdentity_number({ where: { IDENTITY_NUMBER: identityNumber } })
+        } catch (error) {
+            console.log(error)
+            throw Error
+        }
+        if (!cmnd) {
+            patient.PATIENT_NAME = (req.body.PATIENT_NAME) ? req.body.PATIENT_NAME : patient.PATIENT_NAME
+            patient.IDENTITY_NUMBER = (req.body.IDENTITY_NUMBER) ? req.body.IDENTITY_NUMBER : patient.IDENTITY_NUMBER
+            patient.PHONE = (req.body.PHONE) ? req.body.PHONE : patient.PHONE
+            patient.GENDER = (req.body.GENDER) ? req.body.GENDER : patient.GENDER
             patient.DATE_OF_BIRTH = moment(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY')
-            patient.ADDRESS = req.body.ADDRESS
+            patient.ADDRESS = (req.body.ADDRESS) ? req.body.ADDRESS : patient.ADDRESS
             await patient.save()
             return res.status(200).send('Cập nhật thành công!')
+        } else {
+            return res.status(404).send('Số CMND đã tồn tại!')
         }
     } catch (error) {
         console.log(error)
@@ -190,7 +250,7 @@ exports.deletePatient = async (req, res) => {
         else {
             return res.status(404).send('Không có gì để xóa!')
         }
-    } catch (e) {
+    } catch (error) {
         return res.status(500).send('Lỗi sever!')
     }
 }
@@ -212,6 +272,49 @@ exports.createDiagnostic = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(500).send('Lỗi sever!')
+    }
+}
+exports.getAllDiagnostic = async (req, res) => {
+    try {
+        let diagnostic = await DIAGNOSTIC.findAll({
+        })
+        return res.json(diagnostic)
+    } catch (error) {
+        return res.status(500).send('Lỗi sever!')
+    }
+}
+exports.getDiagnosticById = async (req, res) => {
+    try {
+        let id = req.params.id
+        let diagnostic = await DIAGNOSTIC.findOne({
+            where: { DIAGNOSTIC_ID: id }
+        })
+        if (diagnostic) {
+            return res.json(diagnostic)
+        } else {
+            return res.status(404).send('Không có phiếu khám để tìm!')
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Lỗi sever!')
+    }
+}
+exports.updateDiagnostic = async (req, res) => {
+    try {
+        let id = req.params.id
+        let diagnostic = await DIAGNOSTIC.findOne({
+            where: { DIAGNOSTIC_ID: id }
+        })
+        if (diagnostic) {
+            diagnostic.PATIENT_ID = (req.body.PATIENT_ID) ? req.body.PATIENT_ID : diagnostic.PATIENT_ID
+            diagnostic.DOCTOR_ID = (req.body.DOCTOR_ID) ? req.body.DOCTOR_ID : diagnostic.DOCTOR_ID
+            await diagnostic.save()
+            return res.status(200).send('Cập nhật thành công!')
+        } else {
+            return res.status(404).send('Không có phiếu khám để sửa!')
+        }
+    } catch (error) {
+        return res.status(500).send('Lỗi sever')
     }
 }
 exports.deleteDiagnostic = async (req, res) => {
