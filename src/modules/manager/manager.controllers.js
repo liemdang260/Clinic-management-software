@@ -63,13 +63,13 @@ exports.updateEmployee = async (req, res) => {
             where: { EMPLOYEE_ID: id }
         })
         if (employee) {
-            employee.EMPLOYEE_NAME = (req.body.EMPLOYEE_NAME) ? req.body.EMPLOYEE_NAME : employee.EMPLOYEE_NAME,
-                //employee.IDENTITY_NUMBER = req.body.IDENTITY_NUMBER,
-                //employee.PHONE = req.body.PHONE,
-                //employee.GENDER = req.body.GENDER,
-                //employee.DATE_OF_BIRTH = moment(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY'),
-                //employee.EMPLOYEE_ADDRESS = req.body.EMPLOYEE_ADDRESS
-                employee.POSITION = (req.body.POSITION) ? req.body.POSITION : employee.POSITION
+            employee.EMPLOYEE_NAME = (req.body.EMPLOYEE_NAME) ? req.body.EMPLOYEE_NAME : employee.EMPLOYEE_NAME
+            employee.IDENTITY_NUMBER = (req.body.IDENTITY_NUMBER) ? req.body.IDENTITY_NUMBER : employee.IDENTITY_NUMBER
+            employee.PHONE = (req.body.PHONE) ? req.body.PHONE : employee.PHONE
+            employee.GENDER = (req.body.GENDER) ? req.body.GENDER : employee.GENDER
+            employee.DATE_OF_BIRTH = (req.body.DATE_OF_BIRTH) ? moment(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY') : employee.DATE_OF_BIRTH
+            employee.EMPLOYEE_ADDRESS = (req.body.EMPLOYEE_ADDRESS) ? req.body.EMPLOYEE_ADDRESS : employee.EMPLOYEE_ADDRESS
+            employee.POSITION = (req.body.POSITION) ? req.body.POSITION : employee.POSITION
             await employee.save()
             return res.status(200).send('Cập nhật thành công!')
         }

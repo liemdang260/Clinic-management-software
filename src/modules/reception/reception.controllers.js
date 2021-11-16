@@ -143,7 +143,7 @@ exports.updateAppointment = async (req, res) => {
         })
         if (appointment) {
             appointment.DOCTOR_ID = (req.body.DOCTOR_ID) ? req.body.DOCTOR_ID : appointment.DOCTOR_ID
-            appointment.TIMES = moment.utc(req.body.TIMES, 'DD/MM/YYYY h:mm:ss')
+            appointment.TIMES = (req.body.TIMES) ? moment.utc(req.body.TIMES, 'DD/MM/YYYY h:mm:ss') : appointment.TIMES
             appointment.PATIENT_ID = (req.body.PATIENT_ID) ? req.body.PATIENT_ID : appointment.PATIENT_ID
             await appointment.save()
             return res.status(200).send('Cập nhật thành công!')
