@@ -1,6 +1,6 @@
-const { APPOINTMENT, PATIENT, DIAGNOSTIC } = require('../../models')
+const { sequelize, APPOINTMENT, PATIENT, DIAGNOSTIC } = require('../../models')
 const moment = require('moment')
-const { Op } = require("sequelize");
+const { Op, QueryTypes } = require("sequelize");
 
 
 exports.createAppointment = async (req, res) => {
@@ -100,6 +100,39 @@ exports.getAppointmentInDay = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(500).send('Lỗi sever!')
+    }
+}
+
+exports.getAppointmentByWeek = async (req, res) => {
+    let dateInWeek = moment(req.body.date, 'DD/MM/YYYY')
+    try {
+        let appointment = await sequelize.query(`SELECT * FROM APPOINTMENT WHERE DATEPART(WEEK, [TIMES]) = DATEPART(WEEK, ?)`,
+            {
+                replacements: [dateInWeek.toDate()],
+                type: QueryTypes.SELECT
+            })
+        return res.json(appointment)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Lỗi server')
+    }
+}
+
+exports.getAppointmentById = async (req, res) => {
+    let id = req.params.id
+    try {
+        let appointment = await APPOINTMENT.findOne({
+            where: {
+                APPOINTMENT_ID: id
+            }
+        })
+        if (appointment)
+            return res.json(appointment)
+        else
+            return res.status(404).send('Không tìm thấy lịch hẹn nào')
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Lỗi server')
     }
 }
 exports.updateAppointment = async (req, res) => {
@@ -225,7 +258,7 @@ exports.updatePatient = async (req, res) => {
             patient.IDENTITY_NUMBER = (req.body.IDENTITY_NUMBER) ? req.body.IDENTITY_NUMBER : patient.IDENTITY_NUMBER
             patient.PHONE = (req.body.PHONE) ? req.body.PHONE : patient.PHONE
             patient.GENDER = (req.body.GENDER) ? req.body.GENDER : patient.GENDER
-            patient.DATE_OF_BIRTH = moment(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY')
+            patient.DATE_OF_BIRTH = (req.body.DATE_OF_BIRTH) ? moment(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY') : patient.DATE_OF_BIRTH
             patient.ADDRESS = (req.body.ADDRESS) ? req.body.ADDRESS : patient.ADDRESS
             await patient.save()
             return res.status(200).send('Cập nhật thành công!')
