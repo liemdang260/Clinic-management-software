@@ -1,4 +1,5 @@
-const { sequelize, APPOINTMENT, PATIENT, DIAGNOSTIC } = require('../../models')
+const { sequelize, APPOINTMENT, PATIENT, DIAGNOSTIC, APPOINTMENTREQUEST, EMPLOYEE } = require('../../models')
+const diagnosticStack = require('../../static/stack')
 const moment = require('moment')
 const { Op, QueryTypes } = require("sequelize");
 
@@ -104,9 +105,10 @@ exports.getAppointmentInDay = async (req, res) => {
 }
 
 exports.getAppointmentByWeek = async (req, res) => {
+    console.log(req.body)
     let dateInWeek = moment(req.body.date, 'DD/MM/YYYY')
     try {
-        let appointment = await sequelize.query(`SELECT * FROM APPOINTMENT WHERE DATEPART(WEEK, [TIMES]) = DATEPART(WEEK, ?)`,
+        let appointment = await sequelize.query(`SELECT AP.APPOINTMENT_ID, AP.TIMES, PA.PATIENT_ID, PA.PATIENT_NAME, EP.EMPLOYEE_ID, EP.EMPLOYEE_NAME, AP.[TYPE] FROM APPOINTMENT AP JOIN PATIENT PA ON AP.PATIENT_ID = PA.PATIENT_ID JOIN EMPLOYEE EP ON AP.DOCTOR_ID = EP.EMPLOYEE_ID WHERE DATEPART(WEEK, [TIMES]) = DATEPART(WEEK, ?)`,
             {
                 replacements: [dateInWeek.toDate()],
                 type: QueryTypes.SELECT
@@ -171,6 +173,61 @@ exports.deleteAppointment = async (req, res) => {
 
     }
 }
+//status: 0: chưa xác nhận, chưa xem, 1: đã xem, chưa xác nhận
+//2: đã xác nhận
+//3:đã hủy
+exports.getAppointmentRequest = async (req, res) => {
+    try {
+        let request = await APPOINTMENTREQUEST.findAll({
+            where: {
+                [Op.or]:
+                    [{ STATUS: 0 }, { STATUS: 1 }]
+            }
+        })
+        console.log(request[0].PATIENT_ID)
+        return res.json(request)
+    } catch (error) {
+        return res.status(500).send('Lỗi server')
+    }
+
+}
+
+exports.updateAppointmentStatus = async (req, res) => {
+    let id = req.params.id
+    try {
+        let request = await APPOINTMENTREQUEST.findOne({
+            where: {
+                REQUEST_ID: id
+            }
+        })
+        if (!request)
+            return res.status(409).send('Không tìm thấy yêu cầu nào!')
+        if (req.body.status == 2) {
+            console.log('change status to 2')
+        }
+        request.STATUS = (req.body.status) ? req.body.status : request.STATUS
+        await request.save()
+        return res.send("Update thành công")
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Lỗi server')
+    }
+}
+
+exports.getDiagnosticStack = (req, res) => {
+    return res.json(diagnosticStack)
+}
+
+const pushDiagnosticStack = (diagnostic, patient, room, io) => {
+    if (room == 1) {
+        diagnosticStack.room1.addPatientToLast(diagnostic, patient)
+    }
+    else {
+        diagnosticStack.room2.addPatientToLast(diagnostic, patient)
+    }
+    io.emit('diagnostic-stack-change', diagnosticStack)
+}
+
 exports.createPatient = async (req, res) => {
     try {
         if (!req.body) {
@@ -294,6 +351,11 @@ exports.createDiagnostic = async (req, res) => {
                 message: "Không để ô trống!"
             })
         }
+        let patient = await PATIENT.findOne({
+            where:{
+                PATIENT_ID:req.body.PATIENT_ID
+            }
+        })
         let diagnostic = new DIAGNOSTIC({
             PATIENT_ID: req.body.PATIENT_ID,
             CREATE_AT: moment.utc(req.body.CREATE_AT, 'DD/MM/YYYY h:mm:ss'),
@@ -301,6 +363,13 @@ exports.createDiagnostic = async (req, res) => {
             DIAGNOSTIC_FEE: req.body.DIAGNOSTIC_FEE
         })
         await diagnostic.save()
+        let lastDiagnostic = await DIAGNOSTIC.findOne({
+            where:{
+                DIAGNOSTIC_ID:diagnostic.DIAGNOSTIC_ID
+            },
+            include:["DOCTOR", "PATIENT"]
+        })
+        pushDiagnosticStack(lastDiagnostic, 1, req.io)
         return res.status(200).send('Tạo phiếu khám thành công!')
     } catch (error) {
         console.log(error)

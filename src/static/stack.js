@@ -1,18 +1,7 @@
-class Patient {
-
-    order = 0
-    patientName = ''
-
-    constructor(order, patientName) {
-        this.order = order
-        this.patientName = patientName
-    }
-
-
-}
 
 class Stack {
     patientStack = []
+    order = 1
 
     constructor() { }
     get getPatientStack() {
@@ -23,17 +12,19 @@ class Stack {
         this.patientStack = stack
     }
 
-    addPatientToLast(patient) {
-        this.patientStack.push(patient)
+    addPatientToLast(diagnostic,patient) {
+        this.patientStack.push({order:this.order, diagnostic:diagnostic,patient:patient})
+        this.order++
     }
 
     swapOrder() { }
 
 }
 
-
+const room1 = new Stack()
+const room2 = new Stack()
 
 module.exports = {
-    Stack,
-    Patient
+    room1,
+    room2
 }

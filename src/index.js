@@ -14,7 +14,7 @@ let server = createServer(app)
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors())
-app.use('/', mainRouter)
+
 
 const startServer = async () => {
     try {
@@ -36,6 +36,7 @@ app.use((req, res, next) => {
     req.io = io
     return next()
 })
+app.use('/', mainRouter)
 
 
 

@@ -7,11 +7,15 @@ const router = require('express').Router()
 router.post('/appointment', receptionController.createAppointment)
 router.get('/appointment', receptionController.getAllAppointment)
 router.get('/appointment/:id', receptionController.getAppointmentById)
-router.get('/appointment-by-week', receptionController.getAppointmentByWeek)
+router.post('/appointment-by-week', receptionController.getAppointmentByWeek)
 // router.get('/appointment',receptionController.getAppointmentInDay) 
 router.put('/appointment/:id', receptionController.updateAppointment)
 router.delete('/appointment/:id', receptionController.deleteAppointment)
 
+
+router.get('/appointment-request',receptionController.getAppointmentRequest)
+router.put('/appointment-request/:id',receptionController.updateAppointmentStatus)
+router.get('/diagnostic-stack', receptionController.getDiagnosticStack)
 
 
 router.post('/patient', receptionController.createPatient)
