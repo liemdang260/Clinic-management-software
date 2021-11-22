@@ -21,7 +21,7 @@ class PRESCRIPTION_ITEM extends Sequelize.Model {
         }
       },
       DRUG_NAME: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(50),
         allowNull: false
       },
       NUMBER: {
@@ -29,7 +29,7 @@ class PRESCRIPTION_ITEM extends Sequelize.Model {
         allowNull: true
       },
       INSTRUCTION: {
-        type: DataTypes.STRING(1),
+        type: DataTypes.STRING(50),
         allowNull: true
       }
     }, {

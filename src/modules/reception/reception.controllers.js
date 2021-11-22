@@ -1,4 +1,4 @@
-const { APPOINTMENT, PATIENT } = require('../../models')
+const { APPOINTMENT, PATIENT, DIAGNOSTIC } = require('../../models')
 
 const moment = require('moment')
 
@@ -121,6 +121,28 @@ exports.deleteAppointment = async (req, res) => {
             return res.status(404).send('Không có gì để xóa!')
         }
     } catch (e) {
+        return res.status(500).send('Lỗi sever!')
+    }
+}
+exports.createDianosticNew = async (req, res) => {
+    //FromAPPOINTMENT
+    try {
+        let id = req.params.id
+        let appointment = await APPOINTMENT.findOne({
+            where: {APPOINTMENT_ID: id}
+        })
+        if(appointment){
+            let diagnostic = DIAGNOSTIC.create({
+                DOCTOR_ID : appointment.DOCTOR_ID,
+                PATIENT_ID: appointment.PATIENT_ID,
+                CREATE_AT: moment.utc(req.body.CREATE_AT, 'DD/MM/YYYY h:mm:ss') // sữa lại thời gian hiện tại
+            })
+           await diagnostic.save()
+        }else{
+            return res.status(404).send('Không có thông tin')
+        }
+        return res.status(200).send('Tạo thành công!')
+    } catch (error) {
         return res.status(500).send('Lỗi sever!')
     }
 }
