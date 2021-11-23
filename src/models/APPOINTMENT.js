@@ -31,7 +31,15 @@ class APPOINTMENT extends Sequelize.Model {
           model: 'PATIENT',
           key: 'PATIENT_ID'
         }
-      }
+      },
+      TYPE: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true
+      },
+      STATUS: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
     }, {
       sequelize,
       tableName: 'APPOINTMENT',

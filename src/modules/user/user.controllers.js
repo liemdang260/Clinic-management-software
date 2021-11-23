@@ -1,3 +1,4 @@
+
 const { EMPLOYEE} = require('../../models')
 const moment = require('moment')
 
@@ -39,11 +40,6 @@ exports.updateProfileById = async(req,res) =>{
         return res.status(500).send('Lỗi sever!')
     }
 }
-
-
-
-
-
 
 
 
