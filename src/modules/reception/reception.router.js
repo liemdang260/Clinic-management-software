@@ -3,7 +3,6 @@ const authMiddleware = require('../authentication/authentication.middlewares')
 const router = require('express').Router()
 
 
-
 router.post('/appointment', receptionController.createAppointment)
 router.get('/appointment', receptionController.getAllAppointment)
 router.get('/appointment/:id', receptionController.getAppointmentById)
@@ -35,4 +34,5 @@ router.delete('/diagnostic/:id', receptionController.deleteDiagnostic)
 
 
 module.exports = router
+
 
