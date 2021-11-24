@@ -59,6 +59,14 @@ class DIAGNOSTIC extends Sequelize.Model {
       NOTE: {
         type: DataTypes.STRING(50),
         allowNull: true
+      },
+      RECEPTION: {
+        type: DataTypes.INTEGER,
+        allowNull: true
+      },
+      STATUS: {
+        type: DataTypes.INTEGER,
+        defaultValue:1
       }
     }, {
       sequelize,
@@ -77,12 +85,12 @@ class DIAGNOSTIC extends Sequelize.Model {
     });
     return DIAGNOSTIC;
   }
-  static associate({ APPOINTMENT, EMPLOYEE, PATIENT, PRESCRIPTION, SERVICE,SERVICEFORDIAGNOSTIC }) {
+  static associate({ APPOINTMENT, EMPLOYEE, PATIENT, PRESCRIPTION, SERVICE, SERVICEFORDIAGNOSTIC }) {
     this.belongsTo(APPOINTMENT, { as: "RE_EXAMINATION_APPOINTMENT", foreignKey: "RE_EXAMINATION" });
     this.belongsTo(EMPLOYEE, { as: "DOCTOR", foreignKey: "DOCTOR_ID" });
     this.belongsTo(PATIENT, { as: "PATIENT", foreignKey: "PATIENT_ID" });
     this.belongsTo(PRESCRIPTION, { as: "PRESCRIPTION_PRESCRIPTION", foreignKey: "PRESCRIPTION" });
     this.belongsToMany(SERVICE, { as: 'SERVICE_ID_SERVICEs', through: SERVICEFORDIAGNOSTIC, foreignKey: "DIAGNOSTIC_ID", otherKey: "SERVICE_ID" });
-    this.hasMany(SERVICEFORDIAGNOSTIC, { as: "SERVICEFORDIAGNOSTICs", foreignKey: "DIAGNOSTIC_ID"});
+    this.hasMany(SERVICEFORDIAGNOSTIC, { as: "SERVICEFORDIAGNOSTICs", foreignKey: "DIAGNOSTIC_ID" });
   }
 }

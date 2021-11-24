@@ -1,11 +1,11 @@
 const express = require('express')
-const {createServer} = require('http')
+const { createServer } = require('http')
 const cors = require('cors')
 const mainRouter = require('./routers/main-router')
 const dotenv = require('dotenv')
 const { connectDB2 } = require('./connectDB/db')
 const { sequelize } = require('./models')
-const socketIo = require('socket.io')
+const socket = require('./services/socket.io')
 
 dotenv.config()
 
@@ -29,24 +29,14 @@ const startServer = async () => {
     }
 }
 
-startServer()
+startServer().then(() => {
+    socket.init(server)
 
-const io = socketIo(server, { cors: { origin: '*' } })
-app.use((req, res, next) => {
-    req.io = io
-    return next()
-})
-app.use('/', mainRouter)
-
-
-
-io.on('connection',(socket)=>{
-    console.log(socket.id)
-    socket.on('disconnect',()=>{
-        console.log(`${socket.id} is disconnected!`)
+    app.use((req, res, next) => {
+        req.io = socket.io()
+        return next()
     })
-    socket.on('hello',(data)=>{
-        console.log(data)
-    })
+    app.use('/', mainRouter)
 })
+
 

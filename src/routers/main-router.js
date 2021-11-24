@@ -11,9 +11,6 @@ const {isAuth} = require('../modules/authentication/authentication.middlewares')
 const {isManager} = require('../modules/manager/manager.middlewares')
 const {isDoctor} = require('../modules/doctor/doctor.middlewares')
 
-
-
-
 router.use((req, res, next) => {
     console.log(req.method, req.url)
     return next();
@@ -24,23 +21,10 @@ router.get('/', (req, res) => {
 })
 
 router.get('/favicon.ico', () => {})
-
-
-router.use(isAuth)
-router.use('/user',userRouter)
-
-router.use('/doctor',isDoctor,doctorRouter)
-router.use('/manager', isManager,managerRouter)
-router.use('/reception',receptionRouter)
-
-
-
 router.use('/login', authenticationRouter)
 router.use('/customer', customerRouter)
 
 router.use(isAuth)
-
-
 router.use('/user',userRouter)
 router.use('/doctor',isDoctor,doctorRouter)
 router.use('/manager', isManager,managerRouter)

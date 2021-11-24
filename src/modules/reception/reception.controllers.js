@@ -1,5 +1,5 @@
 
-const { sequelize, APPOINTMENT, PATIENT, DIAGNOSTIC, APPOINTMENTREQUEST, EMPLOYEE } = require('../../models')
+const { sequelize, APPOINTMENT, PATIENT, DIAGNOSTIC, APPOINTMENTREQUEST, EMPLOYEE, SERVICEFORDIAGNOSTIC } = require('../../models')
 const diagnosticStack = require('../../static/stack')
 const moment = require('moment')
 const { Op, QueryTypes } = require("sequelize");
@@ -219,14 +219,15 @@ exports.getDiagnosticStack = (req, res) => {
     return res.json(diagnosticStack)
 }
 
-const pushDiagnosticStack = (diagnostic, patient, room, io) => {
+const pushDiagnosticStack = (diagnostic, room) => {
+    let order
     if (room == 1) {
-        diagnosticStack.room1.addPatientToLast(diagnostic, patient)
+        order = diagnosticStack.room1.addPatientToLast(diagnostic)
     }
     else {
-        diagnosticStack.room2.addPatientToLast(diagnostic, patient)
+        order = diagnosticStack.room2.addPatientToLast(diagnostic)
     }
-    io.emit('diagnostic-stack-change', diagnosticStack)
+    return order
 }
 
 exports.createPatient = async (req, res) => {
@@ -346,32 +347,61 @@ exports.deletePatient = async (req, res) => {
     }
 }
 exports.createDiagnostic = async (req, res) => {
+    console.log(req.body)
     try {
-        if (!req.body) {
-            res.status(400).send({
-                message: "Không để ô trống!"
+        let patient
+        if (req.body.PATIENT_ID) {
+            patient = await PATIENT.findOne({
+                where: {
+                    PATIENT_ID: req.body.PATIENT_ID
+                }
             })
-        }
-        let patient = await PATIENT.findOne({
-            where:{
-                PATIENT_ID:req.body.PATIENT_ID
+
+        } else {
+            patient = await PATIENT.findOne({
+                where: {
+                    [Op.or]: [{ PHONE: req.body.PHONE }, { IDENTITY_NUMBER: req.body.IDENTITY_NUMBER }]
+                }
+            })
+            if (!patient) {
+                patient = new PATIENT({
+                    PATIENT_NAME: req.body.PATIENT_NAME,
+                    IDENTITY_NUMBER: req.body.IDENTITY_NUMBER,
+                    PHONE: req.body.PHONE,
+                    GENDER: req.body.GENDER,
+                    DATE_OF_BIRTH: moment(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY'),
+                    ADDRESS: req.body.ADDRESS,
+                    OCCUPATION: req.body.OCCUPATION
+                })
+                await patient.save()
             }
-        })
+        }
         let diagnostic = new DIAGNOSTIC({
-            PATIENT_ID: req.body.PATIENT_ID,
+            PATIENT_ID: patient.PATIENT_ID,
             CREATE_AT: moment.utc(req.body.CREATE_AT, 'DD/MM/YYYY h:mm:ss'),
             DOCTOR_ID: req.body.DOCTOR_ID,
-            DIAGNOSTIC_FEE: req.body.DIAGNOSTIC_FEE
+            DIAGNOSTIC_FEE: req.body.DIAGNOSTIC_FEE,
+            RECEPTION: req.body.RECEPTIONIST,
+            NOTE: req.body.NOTE
         })
         await diagnostic.save()
-        let lastDiagnostic = await DIAGNOSTIC.findOne({
-            where:{
-                DIAGNOSTIC_ID:diagnostic.DIAGNOSTIC_ID
-            },
-            include:["DOCTOR", "PATIENT"]
+        let services = req.body.SERVICES
+        services.map(async service => {
+            let serviceInsert = new SERVICEFORDIAGNOSTIC({
+                DIAGNOSTIC_ID: diagnostic.DIAGNOSTIC_ID,
+                SERVICE_ID: service
+            })
+            await serviceInsert.save()
         })
-        pushDiagnosticStack(lastDiagnostic, 1, req.io)
-        return res.status(200).send('Tạo phiếu khám thành công!')
+        let lastDiagnostic = await DIAGNOSTIC.findOne({
+            where: {
+                DIAGNOSTIC_ID: diagnostic.DIAGNOSTIC_ID
+            },
+            include: ["DOCTOR", "PATIENT", "SERVICE_ID_SERVICEs", ]
+        })
+        let order = pushDiagnosticStack(lastDiagnostic, 1)
+        console.log(order)
+        return res.status(200).json(order)
     } catch (error) {
         console.log(error)
         return res.status(500).send('Lỗi sever!')
@@ -443,20 +473,26 @@ exports.createDianosticNew = async (req, res) => {
     try {
         let id = req.params.id
         let appointment = await APPOINTMENT.findOne({
-            where: {APPOINTMENT_ID: id}
+            where: { APPOINTMENT_ID: id }
         })
-        if(appointment){
+        if (appointment) {
             let diagnostic = DIAGNOSTIC.create({
-                DOCTOR_ID : appointment.DOCTOR_ID,
+                DOCTOR_ID: appointment.DOCTOR_ID,
                 PATIENT_ID: appointment.PATIENT_ID,
                 CREATE_AT: moment.utc(req.body.CREATE_AT, 'DD/MM/YYYY h:mm:ss') // sữa lại thời gian hiện tại
             })
-           await diagnostic.save()
-        }else{
+            await diagnostic.save()
+        } else {
             return res.status(404).send('Không có thông tin')
         }
         return res.status(200).send('Tạo thành công!')
     } catch (error) {
         return res.status(500).send('Lỗi sever!')
     }
+}
+
+exports.getDiagnosticStack = async (req, res) => {
+    let room1 = diagnosticStack.room1.getPatientStack()
+    let room2 = diagnosticStack.room2.getPatientStack()
+    return res.json({room1, room2})
 }

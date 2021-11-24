@@ -30,6 +30,7 @@ router.get('/diagnostic', receptionController.getAllDiagnostic)
 router.get('/diagnostic/:id', receptionController.getDiagnosticById)
 router.put('/diagnostic/:id', receptionController.updateDiagnostic)
 router.delete('/diagnostic/:id', receptionController.deleteDiagnostic)
+router.get('/diagnostic-stack', receptionController.getDiagnosticStack)
 
 
 
