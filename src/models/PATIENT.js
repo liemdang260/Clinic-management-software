@@ -35,6 +35,10 @@ class PATIENT extends Sequelize.Model {
       ADDRESS: {
         type: DataTypes.STRING(100),
         allowNull: true
+      },
+      OCCUPATION: {
+        type: DataTypes.STRING(50),
+        allowNull: true
       }
     }, {
       sequelize,
