@@ -3,5 +3,5 @@ const router = require('express').Router()
 
 
 router.get('/room', doctorControllers.getRoom)
-router.put('/diagnostic/:id', doctorControllers.updateDiagnosticDT)
+router.put('/diagnostic/', doctorControllers.updateDiagnosticDT)
 module.exports = router

@@ -34,11 +34,14 @@ class Stack {
         while (this.patientStack[this.order]) {
             this.order++
         }
-        this.patientStack[this.order] = { order: this.order, diagnostic: diagnostic, status: 'pending' }
+        this.patientStack[this.order] = { order: this.order, diagnostic: diagnostic, status: 'pending', time:new Date() }
         this.changeStack()
         return this.order
     }
 
+    changeTime(pnum, time){
+
+    }
     changeStatus(order, status) {
         if (this.patientStack[order] && this.patientStack[order] != 'appointment') {
             this.patientStack[order].status = status

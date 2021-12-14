@@ -66,8 +66,24 @@ class DIAGNOSTIC extends Sequelize.Model {
       },
       STATUS: {
         type: DataTypes.INTEGER,
-        defaultValue:1
-      }
+        defaultValue: 1
+      },
+      BLOOD_PRESSURE: {
+        type: DataTypes.STRING(10),
+        allowNull: true
+      },
+      PULSE: {
+        type: DataTypes.STRING(10),
+        allowNull: true
+      },
+      DIAGNOSTIC: {
+        type: DataTypes.STRING(50),
+        allowNull: true
+      },
+      TEMPERATURE: {
+        type: DataTypes.STRING(10),
+        allowNull: true
+      },
     }, {
       sequelize,
       tableName: 'DIAGNOSTIC',

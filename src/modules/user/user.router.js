@@ -5,8 +5,9 @@ const authMiddleware = require('../authentication/authentication.middlewares')
 
 
 
-router.get('/profile',authMiddleware.isAuth,userController.getProfileById)
-router.put('/profile',userController.updateProfileById)
+router.get('/profile', authMiddleware.isAuth, userController.getProfileById)
+router.put('/profile', userController.updateProfileById)
+router.put('/password', userController.changPassword)
 
 //quên mật khẩu
 
