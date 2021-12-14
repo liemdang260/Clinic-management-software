@@ -410,6 +410,7 @@ exports.createDiagnostic = async (req, res) => {
 exports.getAllDiagnostic = async (req, res) => {
     try {
         let diagnostic = await DIAGNOSTIC.findAll({
+            include:['PATIENT']
         })
         return res.json(diagnostic)
     } catch (error) {

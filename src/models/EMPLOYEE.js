@@ -69,10 +69,11 @@ class EMPLOYEE extends Sequelize.Model {
     });
     return EMPLOYEE;
   }
-  static associate({ POSITION, ACCOUNT, APPOINTMENT, DIAGNOSTIC }) {
+  static associate({ POSITION, ACCOUNT, APPOINTMENT, DIAGNOSTIC, ROOM }) {
     this.belongsTo(POSITION, { foreignKey: "POSITION", as: 'position' })
     this.hasMany(ACCOUNT, { foreignKey: "EMPLOYEE_ID" })
     this.hasMany(APPOINTMENT, { as: "APPOINTMENTs", foreignKey: "DOCTOR_ID" });
     this.hasMany(DIAGNOSTIC, { as: "DIAGNOSTICs", foreignKey: "DOCTOR_ID" });
+    this.hasMany(ROOM, { as: "ROOMs", foreignKey: "DOCTOR_ID" });
   }
 }

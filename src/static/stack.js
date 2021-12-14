@@ -10,7 +10,7 @@ const emitChange = ()=>{
     })
 }
 //status:
-// penđing, diagnosing, diagnosed, appointment
+// pending, diagnosing, diagnosed, appointment
 class Stack {
     patientStack = Array(50)
     order = 0
@@ -34,7 +34,7 @@ class Stack {
         while (this.patientStack[this.order]) {
             this.order++
         }
-        this.patientStack[this.order] = { order: this.order, diagnostic: diagnostic, status: 'penđing' }
+        this.patientStack[this.order] = { order: this.order, diagnostic: diagnostic, status: 'pending' }
         this.changeStack()
         return this.order
     }
