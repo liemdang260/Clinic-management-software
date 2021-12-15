@@ -33,7 +33,7 @@ class DIAGNOSTIC extends Sequelize.Model {
         }
       },
       SYMPTOM: {
-        type: DataTypes.STRING(1),
+        type: DataTypes.STRING(100),
         allowNull: true
       },
       PRESCRIPTION: {
@@ -77,7 +77,7 @@ class DIAGNOSTIC extends Sequelize.Model {
         allowNull: true
       },
       DIAGNOSTIC: {
-        type: DataTypes.STRING(50),
+        type: DataTypes.STRING(100),
         allowNull: true
       },
       TEMPERATURE: {

@@ -1,12 +1,12 @@
 const { sequelize, APPOINTMENT } = require('../models')
 const { dateParse, today } = require('../constants/date')
 const { QueryTypes, or } = require("sequelize");
-const {io} = require('../services/socket.io') 
+const { io } = require('../services/socket.io')
 
-const emitChange = ()=>{
+const emitChange = () => {
     io().emit('diagnostic-stack-change', {
-        room1:room1.getPatientStack(),
-        room2:room2.getPatientStack()
+        room1: room1.getPatientStack(),
+        room2: room2.getPatientStack()
     })
 }
 //status:
@@ -17,7 +17,7 @@ class Stack {
 
     constructor() { }
 
-    changeStack(){
+    changeStack() {
         emitChange()
     }
 
@@ -34,17 +34,27 @@ class Stack {
         while (this.patientStack[this.order]) {
             this.order++
         }
-        this.patientStack[this.order] = { order: this.order, diagnostic: diagnostic, status: 'pending', time:new Date() }
+        this.patientStack[this.order] = { order: this.order, diagnostic: diagnostic, status: 'pending', time: new Date() }
         this.changeStack()
         return this.order
     }
 
-    changeTime(pnum, time){
+    changeTime(pnum, time) {
 
     }
     changeStatus(order, status) {
-        if (this.patientStack[order] && this.patientStack[order] != 'appointment') {
-            this.patientStack[order].status = status
+        // if (this.patientStack[order] && this.patientStack[order] != 'appointment') {
+        //     this.patientStack[order].status = status
+        // }
+        console.log(order, status)
+        for (let i = 0; i < this.patientStack.length; i++) {
+            if (this.patientStack[i] != null && this.patientStack[i].status != 'appointment' && this.patientStack[i].status != 'diagnosed') {
+                if (this.patientStack[i].order == order) {
+                    this.patientStack[i].status = status
+                    console.log(this.patientStack[i])
+                    break;
+                }
+            }
         }
         this.changeStack()
     }
