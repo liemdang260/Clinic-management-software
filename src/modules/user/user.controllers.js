@@ -1,4 +1,4 @@
-const { EMPLOYEE, ACCOUNT } = require('../../models')
+const { EMPLOYEE, ACCOUNT, ROOM, SERVICE } = require('../../models')
 const { enCryptPassword } = require('../authentication/authentication.methods')
 const { Op } = require("sequelize");
 const moment = require('moment')
@@ -62,14 +62,26 @@ exports.changPassword = async (req, res) => {
     }
 }
 
-exports.getAllEmployee = async (req, res) => {
+exports.getAllService = async (req,res)=>{
     try {
-        let employee = await EMPLOYEE.findAll({
-            //raw: true,
-        })
-        return res.json(employee)
-    } catch (e) {
-        return res.status(500).send('Lỗi sever!')
+        let service = await SERVICE.findAll()
+        return res.json(service)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json('Lỗi server')
     }
 }
 
+
+
+exports.getAllDoctor = async (req, res) => {
+    try {
+        let doctor = await ROOM.findAll({
+            include: ["DOCTOR"]
+        })
+        return res.json(doctor)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Lỗi sever!')
+    }
+}
