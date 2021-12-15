@@ -50,7 +50,8 @@ class APPOINTMENTREQUEST extends Sequelize.Model {
     },
     STATUS: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
+      defaultValue:0
     }
   }, {
     sequelize,
