@@ -1,36 +1,37 @@
-const { sequelize, EMPLOYEE, SERVICE } = require('../../models')
+const { sequelize, EMPLOYEE, SERVICE, ACCOUNT } = require('../../models')
+const {enCryptPassword} = require('../authentication/authentication.methods')
 const moment = require('moment')
 exports.createEmployee = async (req, res) => {
     console.log(req.body)
-    // try {
-    //     if (!req.body) {
-    //         res.status(400).send({
-    //             message: "Không để ô trống"
-    //         })
-    //     }
-    //     let identity_number = req.body.IDENTITY_NUMBER
-    //     let employee = await EMPLOYEE.findOne({
-    //         where: { IDENTITY_NUMBER: identity_number }
-    //     })
-    //     if (!employee) {
-    //         let newEmployee = new EMPLOYEE({
-    //             EMPLOYEE_NAME: req.body.EMPLOYEE_NAME,
-    //             IDENTITY_NUMBER: req.body.IDENTITY_NUMBER,
-    //             PHONE: req.body.PHONE,
-    //             GENDER: req.body.GENDER,
-    //             DATE_OF_BIRTH: moment.utc(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY h:mm:ss'),
-    //             EMPLOYEE_ADDRESS: req.body.EMPLOYEE_ADDRESS,
-    //             POSITION: req.body.POSITION
-    //         })
-    //         await newEmployee.save()
-    //     } else {
-    //         return res.status(409).send('Số CMND đã tồn tại!')
-    //     }
-    //     return res.status(200).send("Tạo thành công!")
-    // } catch (error) {
-    //     console.log(error)
-    //     return res.status(500).send('Lỗi sever!')
-    // }
+    try {
+        let employee = new EMPLOYEE({
+            EMPLOYEE_NAME: req.body.EMPLOYEE_NAME,
+            IDENTITY_NUMBER:req.body.IDENTITY_NUMBER,
+            PHONE:req.body.PHONE,
+            GENDER: req.body.GENDER,
+            DATE_OF_BIRTH:req.body.DATE_OF_BIRTH,
+            EMPLOYEE_ADDRESS: req.body.EMPLOYEE_ADDRESS,
+            POSITION:req.body.POSITION,
+            START_WORK_DATE:req.body.START_WORK_DATE,
+            SALARY: req.body.SALARY
+
+        })
+        await employee.save()
+
+        let account = new ACCOUNT({
+            EMPLOYEE_ID: employee.EMPLOYEE_ID,
+            USERNAME:req.body.USERNAME,
+            PASSWORD: enCryptPassword(req.body.PASSWORD),
+            ISACTIVE: true,
+            ROLE: req.body.POSITION
+        })
+
+        await account.save()
+        return res.send('Tạo nhân viên thành công')
+    } catch (error) {
+        console.log(error)
+        return res.status(500).send('Lỗi sever!')
+    }
 }
 exports.getAllEmployee = async (req, res) => {
     try {
