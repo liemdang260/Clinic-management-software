@@ -1,35 +1,36 @@
 const { sequelize, EMPLOYEE, SERVICE } = require('../../models')
 const moment = require('moment')
 exports.createEmployee = async (req, res) => {
-    try {
-        if (!req.body) {
-            res.status(400).send({
-                message: "Không để ô trống"
-            })
-        }
-        let identity_number = req.body.IDENTITY_NUMBER
-        let employee = await EMPLOYEE.findOne({
-            where: { IDENTITY_NUMBER: identity_number }
-        })
-        if (!employee) {
-            let newEmployee = new EMPLOYEE({
-                EMPLOYEE_NAME: req.body.EMPLOYEE_NAME,
-                IDENTITY_NUMBER: req.body.IDENTITY_NUMBER,
-                PHONE: req.body.PHONE,
-                GENDER: req.body.GENDER,
-                DATE_OF_BIRTH: moment.utc(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY h:mm:ss'),
-                EMPLOYEE_ADDRESS: req.body.EMPLOYEE_ADDRESS,
-                POSITION: req.body.POSITION
-            })
-            await newEmployee.save()
-        } else {
-            return res.status(409).send('Số CMND đã tồn tại!')
-        }
-        return res.status(200).send("Tạo thành công!")
-    } catch (error) {
-        console.log(error)
-        return res.status(500).send('Lỗi sever!')
-    }
+    console.log(req.body)
+    // try {
+    //     if (!req.body) {
+    //         res.status(400).send({
+    //             message: "Không để ô trống"
+    //         })
+    //     }
+    //     let identity_number = req.body.IDENTITY_NUMBER
+    //     let employee = await EMPLOYEE.findOne({
+    //         where: { IDENTITY_NUMBER: identity_number }
+    //     })
+    //     if (!employee) {
+    //         let newEmployee = new EMPLOYEE({
+    //             EMPLOYEE_NAME: req.body.EMPLOYEE_NAME,
+    //             IDENTITY_NUMBER: req.body.IDENTITY_NUMBER,
+    //             PHONE: req.body.PHONE,
+    //             GENDER: req.body.GENDER,
+    //             DATE_OF_BIRTH: moment.utc(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY h:mm:ss'),
+    //             EMPLOYEE_ADDRESS: req.body.EMPLOYEE_ADDRESS,
+    //             POSITION: req.body.POSITION
+    //         })
+    //         await newEmployee.save()
+    //     } else {
+    //         return res.status(409).send('Số CMND đã tồn tại!')
+    //     }
+    //     return res.status(200).send("Tạo thành công!")
+    // } catch (error) {
+    //     console.log(error)
+    //     return res.status(500).send('Lỗi sever!')
+    // }
 }
 exports.getAllEmployee = async (req, res) => {
     try {
@@ -95,6 +96,30 @@ exports.deleteEmployee = async (req, res) => {
         return res.status(500).send('Lỗi sever!')
     }
 }
+exports.createService = async (req,res)=>{
+    try {
+        let service = new SERVICE({
+            SERVICE_NAME:req.body.name,
+            FEE:req.body.fee
+        })
+        await service.save()
+        return res.json('Thêm thành công')
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json('Lỗi server')
+    }
+}
+
+exports.getAllService = async (req,res)=>{
+    try {
+        let service = await SERVICE.findAll()
+        return res.json(service)
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json('Lỗi server')
+    }
+}
+
 exports.changeMedicalExaminationFee = async (req, res) => {
     let newFee = {
         id: req.body.id,

@@ -46,7 +46,7 @@ class Stack {
         // if (this.patientStack[order] && this.patientStack[order] != 'appointment') {
         //     this.patientStack[order].status = status
         // }
-        console.log(this.patientStack)
+        
         console.log(order, status)
         for (let i = 0; i < this.patientStack.length; i++) {
             if (this.patientStack[i] != null && this.patientStack[i].status != 'appointment' && this.patientStack[i].status != 'diagnosed') {
@@ -57,6 +57,7 @@ class Stack {
                 }
             }
         }
+        console.log(this.getPatientStack())
         this.changeStack()
     }
 

@@ -12,7 +12,8 @@ router.delete('/employees/:id', managerController.deleteEmployee)
 
 
 router.put('/medical-examination-fee', managerController.changeMedicalExaminationFee)
-
+router.post('/medical-examination-fee', managerController.createService)
+router.get('/medical-examination-fee', managerController.getAllService)
 
 
 module.exports = router
