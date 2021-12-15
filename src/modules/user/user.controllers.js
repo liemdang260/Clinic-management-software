@@ -62,4 +62,14 @@ exports.changPassword = async (req, res) => {
     }
 }
 
+exports.getAllEmployee = async (req, res) => {
+    try {
+        let employee = await EMPLOYEE.findAll({
+            //raw: true,
+        })
+        return res.json(employee)
+    } catch (e) {
+        return res.status(500).send('Lỗi sever!')
+    }
+}
 
