@@ -185,9 +185,9 @@ exports.getAppointmentRequest = async (req, res) => {
                     [{ STATUS: 0 }, { STATUS: 1 }]
             }
         })
-        console.log(request[0].PATIENT_ID)
         return res.json(request)
     } catch (error) {
+        console.log(error)
         return res.status(500).send('Lỗi server')
     }
 
