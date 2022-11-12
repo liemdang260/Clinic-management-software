@@ -1,7 +1,7 @@
 {
-    "username": "PMQL_nhathuoc_SQLLogin_1",
-    "password": "nzkhnslrj7",
-    "database": "quanlinhathuoc",
-    "host": "quanlinhathuoc.mssql.somee.com",
-    "dialect": "mssql"
+    "username": "clinic",
+    "password": "clinic",
+    "database": "clinic", 
+    "host": "127.0.0.1",
+    "dialect": "mysql"
 }

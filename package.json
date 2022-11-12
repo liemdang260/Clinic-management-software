@@ -2,6 +2,7 @@
   "name": "clinic-management-software",
   "version": "1.0.0",
   "description": "",
+  "type": "module",
   "main": "./src/index.js",
   "scripts": {
     "start": "nodemon src/index.js",
@@ -25,6 +26,7 @@
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "moment": "^2.29.1",
+    "mysql2": "^2.3.3",
     "sequelize": "^6.6.5",
     "sequelize-auto": "^0.8.4",
     "socket.io": "^4.3.2",

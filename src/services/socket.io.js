@@ -1,25 +1,26 @@
-const socketIo = require('socket.io')
+import { Server } from "socket.io";
 // const stack = require('src/static/stack')
-let io = null
 
-exports.io = () => {
-    return io
-}
+const io = () => {
+  return io;
+};
 
-exports.init = (server) => {
-    io = socketIo(server, { cors: { origin: '*' } })
-    io.on('connection', (socket) => {
-        console.log(socket.id)
-        socket.on('disconnect', () => {
-            console.log(`${socket.id} is disconnected!`)
-        })
-        socket.on('hello', (data) => {
-            console.log(data)
-        })
-        socket.on('start', (data) => {
-            console.log(data)
-        })
-    })
+const init = (server) => {
+  const io = new Server(server, { cors: { origin: "*" } });
+  io.on("connection", (socket) => {
+    console.log(socket.id);
+    socket.on("disconnect", () => {
+      console.log(`${socket.id} is disconnected!`);
+    });
+    socket.on("hello", (data) => {
+      console.log(data);
+    });
+    socket.on("start", (data) => {
+      console.log(data);
+    });
+  });
 
-    return io
-}
+  return io;
+};
+
+export default { io, init };
