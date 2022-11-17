@@ -5,7 +5,7 @@ export default (sequelize, DataTypes) => {
 
 class EMPLOYEE extends Sequelize.Model {
   static init(sequelize, DataTypes) {
-    super.init(
+    return super.init(
       {
         EMPLOYEE_ID: {
           autoIncrement: true,
@@ -14,15 +14,15 @@ class EMPLOYEE extends Sequelize.Model {
           primaryKey: true,
         },
         EMPLOYEE_NAME: {
-          type: DataTypes.STRING(50),
+          type: DataTypes.STRING(30),
           allowNull: true,
         },
         IDENTITY_NUMBER: {
-          type: DataTypes.STRING(15),
+          type: DataTypes.STRING(11),
           allowNull: true,
         },
         PHONE: {
-          type: DataTypes.STRING(10),
+          type: DataTypes.STRING(11),
           allowNull: true,
         },
         GENDER: {
@@ -34,12 +34,12 @@ class EMPLOYEE extends Sequelize.Model {
           allowNull: true,
         },
         EMPLOYEE_ADDRESS: {
-          type: DataTypes.STRING(100),
+          type: DataTypes.STRING(50),
           allowNull: true,
         },
         POSITION: {
           type: DataTypes.INTEGER,
-          allowNull: true,
+          allowNull: false,
           references: {
             model: "POSITION",
             key: "POSITION_ID",
@@ -57,24 +57,29 @@ class EMPLOYEE extends Sequelize.Model {
       {
         sequelize,
         tableName: "EMPLOYEE",
-        schema: "dbo",
         timestamps: false,
         indexes: [
           {
-            name: "PK__EMPLOYEE__CBA14F4896C5029D",
+            name: "PRIMARY",
             unique: true,
+            using: "BTREE",
             fields: [{ name: "EMPLOYEE_ID" }],
+          },
+          {
+            name: "FK_EMPLOYEE_POSITION_EMPLOYEE_ID",
+            using: "BTREE",
+            fields: [{ name: "POSITION" }],
           },
         ],
       }
     );
-    return EMPLOYEE;
   }
-  static associate({ POSITION, ACCOUNT, APPOINTMENT, DIAGNOSTIC, ROOM }) {
-    this.belongsTo(POSITION, { foreignKey: "POSITION", as: "position" });
-    this.hasMany(ACCOUNT, { foreignKey: "EMPLOYEE_ID" });
-    this.hasMany(APPOINTMENT, { as: "APPOINTMENTs", foreignKey: "DOCTOR_ID" });
-    this.hasMany(DIAGNOSTIC, { as: "DIAGNOSTICs", foreignKey: "DOCTOR_ID" });
-    this.hasMany(ROOM, { as: "ROOMs", foreignKey: "DOCTOR_ID" });
+
+  static associate({ ACCOUNT, POSITION }) {
+    EMPLOYEE.belongsTo(POSITION, {
+      as: "POSITIONS",
+      foreignKey: "POSITION",
+    });
+    EMPLOYEE.hasOne(ACCOUNT, { as: "ACCOUNT", foreignKey: "EMPLOYEE_ID" });
   }
 }

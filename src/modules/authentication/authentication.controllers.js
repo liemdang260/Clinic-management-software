@@ -3,9 +3,9 @@ import {
   generateAccessToken,
 } from "./authentication.methods.js";
 import database, { sequelize } from "../../models/index.js";
-const { ACCOUNT, EMPLOYEE } = database;
 
 const handleLogin = async (req, res) => {
+  const { ACCOUNT, EMPLOYEE } = database;
   let username = req.body.username;
   let password = enCryptPassword(req.body.password);
 
@@ -14,7 +14,7 @@ const handleLogin = async (req, res) => {
       where: {
         USERNAME: username,
       },
-      include: [EMPLOYEE],
+      include: ["EMPLOYEE"],
     });
     if (!account || account.length == 0)
       return res.status(404).send("Khong tim thay user!");

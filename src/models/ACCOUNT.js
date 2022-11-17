@@ -5,47 +5,51 @@ export default (sequelize, DataTypes) => {
 
 class ACCOUNT extends Sequelize.Model {
   static init(sequelize, DataTypes) {
-    super.init(
+    return super.init(
       {
         EMPLOYEE_ID: {
           type: DataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
+          references: {
+            model: "EMPLOYEE",
+            key: "EMLOYEE_ID",
+          },
         },
         USERNAME: {
-          type: DataTypes.STRING(50),
-          allowNull: true,
+          type: DataTypes.STRING(30),
+          allowNull: false,
         },
         PASSWORD: {
           type: DataTypes.STRING(50),
-          allowNull: true,
+          allowNull: false,
         },
         ISACTIVE: {
           type: DataTypes.BOOLEAN,
-          allowNull: true,
+          allowNull: false,
         },
         ROLE: {
-          type: DataTypes.INTEGER,
-          allowNull: true,
+          type: DataTypes.TINYINT,
+          allowNull: false,
         },
       },
       {
         sequelize,
         tableName: "ACCOUNT",
-        schema: "dbo",
         timestamps: false,
         indexes: [
           {
-            name: "PK__ACCOUNT__CBA14F4835C32BC1",
+            name: "PRIMARY",
             unique: true,
+            using: "BTREE",
             fields: [{ name: "EMPLOYEE_ID" }],
           },
         ],
       }
     );
-    return ACCOUNT;
   }
+
   static associate({ EMPLOYEE }) {
-    this.belongsTo(EMPLOYEE, { foreignKey: "EMPLOYEE_ID" });
+    this.belongsTo(EMPLOYEE, { as: "EMPLOYEE", foreignKey: "EMPLOYEE_ID" });
   }
 }
