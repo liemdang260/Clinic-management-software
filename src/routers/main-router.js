@@ -37,4 +37,9 @@ router.use("/doctor", isDoctor, doctorRouter);
 router.use("/manager", isManager, managerRouter);
 router.use("/reception", receptionRouter);
 
+router.use((error, req, res, next) => {
+  console.log(error);
+  return res.status(error.code).send(error.message);
+});
+
 export default router;
