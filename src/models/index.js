@@ -51,5 +51,9 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+const { ACCOUNT, EMPLOYEE, POSITION } = db;
+
+//TODO remove this line
 export default db;
-export { sequelize, Sequelize };
+
+export { sequelize, Sequelize, ACCOUNT, EMPLOYEE, POSITION };
