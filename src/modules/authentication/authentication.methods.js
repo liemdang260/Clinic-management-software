@@ -1,13 +1,14 @@
 import md5 from "md5";
 import jwt from "jsonwebtoken";
+import CustomError, { ERROR_MESSAGE } from "../../services/customError.js";
 
 export const enCryptPassword = (pass) => {
   return md5(pass);
 };
 
 export const generateAccessToken = async (payload) => {
-  const privateKey = process.env.PRIVATEKEY;
-  const tokenLife = process.env.TOKENLIFE;
+  const privateKey = process.env.PRIVATE_KEY;
+  const tokenLife = process.env.TOKEN_LIFE;
   try {
     return await jwt.sign(
       {
@@ -21,18 +22,26 @@ export const generateAccessToken = async (payload) => {
     );
   } catch (error) {
     console.log(`Loi tao accesstoken: ${error}`);
-    throw Error;
+    throw new CustomError({
+      code: 500,
+      ...ERROR_MESSAGE.invalidGeneratedAccessToken,
+    });
   }
 };
 
+// TODO test this function
 export const decryptAccessToken = async (token) => {
-  const privateKey = process.env.PRIVATEKEY;
-  const tokenLife = process.env.TOKENLIFE;
+  const privateKey = process.env.PRIVATE_KEY;
   try {
     return await jwt.verify(token, privateKey, {
-      ignoreExpiration: true,
+      //TODO ignoreExpiration: true,
+      ignoreExpiration: false,
     });
   } catch (error) {
     console.log("loi giai ma access token!");
+    throw new CustomError({
+      code: 500,
+      ...ERROR_MESSAGE.invalidGeneratedAccessToken,
+    });
   }
 };
