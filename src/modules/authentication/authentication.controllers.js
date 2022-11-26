@@ -13,11 +13,17 @@ const handleLogin = async (req, res, next) => {
     });
 
     if (!account) {
-      throw new CustomError({ code: 404, ...ERROR_MESSAGE.userDoesNotExist });
+      throw new CustomError({
+        code: 404,
+        ...ERROR_MESSAGE.userDoesNotExist,
+      });
     }
 
     if (enCryptPassword(password).localeCompare(account.PASSWORD) != 0) {
-      throw new CustomError({ code: 401, ...ERROR_MESSAGE.incorrectPassword });
+      throw new CustomError({
+        code: 401,
+        ...ERROR_MESSAGE.incorrectPassword,
+      });
     }
 
     let access_token = await generateAccessToken({

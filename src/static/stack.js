@@ -17,7 +17,6 @@ const emitChange = () => {
 class Stack {
   patientStack = Array(50);
   order = 0;
-
   constructor() {}
 
   changeStack() {

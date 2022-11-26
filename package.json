@@ -6,7 +6,8 @@
   "main": "./src/index.js",
   "scripts": {
     "start": "nodemon src/index.js",
-    "test": "node src/test.js"
+    "test": "node src/test.js",
+    "format": "prettier --write ./**/*.{js,json}"
   },
   "repository": {
     "type": "git",
@@ -33,6 +34,8 @@
     "tedious": "^13.1.0"
   },
   "devDependencies": {
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.13"
   }
 }

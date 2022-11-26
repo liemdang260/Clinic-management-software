@@ -2,7 +2,7 @@
   "development": {
     "username": "clinic",
     "password": "clinic",
-    "database": "clinic", 
+    "database": "clinic",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
