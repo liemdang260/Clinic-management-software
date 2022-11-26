@@ -1,5 +1,5 @@
 import {
-  enCryptPassword,
+  comparePassword,
   generateAccessToken,
 } from "./authentication.methods.js";
 import { findAccoutByUsername } from "../../services/databaseServices/index.js";
@@ -19,7 +19,7 @@ const handleLogin = async (req, res, next) => {
       });
     }
 
-    if (enCryptPassword(password).localeCompare(account.PASSWORD) != 0) {
+    if (!(await comparePassword(password, account.PASSWORD))) {
       throw new CustomError({
         code: 401,
         ...ERROR_MESSAGE.incorrectPassword,

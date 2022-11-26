@@ -37,4 +37,8 @@ export const ERROR_MESSAGE = {
     name: "invalidAccessToken",
     message: "Invalid access token",
   },
+  serverError: {
+    name: "serverError",
+    message: "Server error",
+  },
 };
