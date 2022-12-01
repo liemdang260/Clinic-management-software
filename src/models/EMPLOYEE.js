@@ -71,7 +71,7 @@ class EMPLOYEE extends Sequelize.Model {
             fields: [{ name: "POSITION" }],
           },
         ],
-      }
+      },
     );
   }
 
@@ -81,5 +81,9 @@ class EMPLOYEE extends Sequelize.Model {
       foreignKey: "POSITION",
     });
     EMPLOYEE.hasOne(ACCOUNT, { as: "ACCOUNT", foreignKey: "EMPLOYEE_ID" });
+    EMPLOYEE.hasMany(APPOINTMENT, {
+      as: "appointments",
+      foreignKey: "DOCTOR_ID",
+    });
   }
 }

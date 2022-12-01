@@ -22,7 +22,7 @@ if (config.use_env_variable) {
     config.database,
     config.username,
     config.password,
-    config
+    config,
   );
 }
 const modelName = fs.readdirSync(__dirname).filter((file) => {
@@ -51,9 +51,27 @@ Object.keys(db).forEach((modelName) => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
-const { ACCOUNT, EMPLOYEE, POSITION } = db;
+const {
+  ACCOUNT,
+  EMPLOYEE,
+  POSITION,
+  APPOINTMENT_STATUS,
+  APPOINTMENT,
+  PATIENT,
+  TYPE_OF_EXAMINATION,
+} = db;
 
 //TODO remove this line
 export default db;
 
-export { sequelize, Sequelize, ACCOUNT, EMPLOYEE, POSITION };
+export {
+  sequelize,
+  Sequelize,
+  ACCOUNT,
+  EMPLOYEE,
+  POSITION,
+  APPOINTMENT_STATUS,
+  APPOINTMENT,
+  PATIENT,
+  TYPE_OF_EXAMINATION,
+};
