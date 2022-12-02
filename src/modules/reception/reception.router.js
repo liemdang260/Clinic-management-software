@@ -14,7 +14,7 @@ router.delete("/appointment/:id", receptionController.deleteAppointment);
 router.get("/appointment-request", receptionController.getAppointmentRequest);
 router.put(
   "/appointment-request/:id",
-  receptionController.updateAppointmentStatus
+  receptionController.updateAppointmentStatus,
 );
 router.get("/diagnostic-stack", receptionController.getDiagnosticStack);
 

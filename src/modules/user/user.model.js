@@ -25,7 +25,7 @@ account.init(
   {
     sequelize,
     modelName: "account",
-  }
+  },
 );
 
 console.log(account === sequelize.models.account);

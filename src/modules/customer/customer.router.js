@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.post(
   "/appointment-request",
-  customerController.createAppointmentRequest
+  customerController.createAppointmentRequest,
 );
 
 export default router;

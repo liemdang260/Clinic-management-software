@@ -34,7 +34,7 @@ class POSITION extends Sequelize.Model {
             fields: [{ name: "POSITION_ID" }],
           },
         ],
-      }
+      },
     );
   }
   static associate({ EMPLOYEE }) {

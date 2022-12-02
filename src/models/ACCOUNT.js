@@ -45,7 +45,7 @@ class ACCOUNT extends Sequelize.Model {
             fields: [{ name: "EMPLOYEE_ID" }],
           },
         ],
-      }
+      },
     );
   }
 
