@@ -1,20 +1,26 @@
+import CustomError, { ERROR_MESSAGE } from "../../services/customError.js";
 import { decryptAccessToken } from "./authentication.methods.js";
 
-export const isAuth = async (req, res, next) => {
+export const isAuth = (req, _, next) => {
   try {
-    let access_token = req.headers.access_token;
+    const { access_token } = req.headers;
+
     if (!access_token) {
-      return res.status(401).send("Khong tim thay access token!");
+      throw new CustomError({ code: 401, ...ERROR_MESSAGE.invalidAccessToken });
     }
-    let verify = await decryptAccessToken(access_token);
+
+    const verify = decryptAccessToken(access_token);
+
     if (!verify) {
-      res.status(401).send("Ban khong co quyen truy cap vao tinh nang nay!");
+      throw new CustomError({ code: 401, ...ERROR_MESSAGE.invalidAccessToken });
     }
-    let payload = verify.payload;
-    req.userInfo = payload;
+
+    req.userInfo = verify.payload;
+
     return next();
   } catch (error) {
     console.log("loi access token");
+
     next(error);
   }
 };

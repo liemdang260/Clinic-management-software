@@ -20,11 +20,11 @@ export const comparePassword = async (plainPassword, hashPassword) => {
   return await bcrypt.compare(plainPassword, hashPassword);
 };
 
-export const generateAccessToken = async (payload) => {
+export const generateAccessToken = (payload) => {
   const privateKey = process.env.PRIVATE_KEY;
   const tokenLife = process.env.TOKEN_LIFE;
   try {
-    return await jwt.sign(
+    return jwt.sign(
       {
         payload,
       },
@@ -44,10 +44,10 @@ export const generateAccessToken = async (payload) => {
 };
 
 // TODO test this function
-export const decryptAccessToken = async (token) => {
+export const decryptAccessToken = (token) => {
   const privateKey = process.env.PRIVATE_KEY;
   try {
-    return await jwt.verify(token, privateKey, {
+    return jwt.verify(token, privateKey, {
       //TODO ignoreExpiration: true,
       ignoreExpiration: false,
     });

@@ -26,7 +26,7 @@ const handleLogin = async (req, res, next) => {
       });
     }
 
-    let access_token = await generateAccessToken({
+    let access_token = generateAccessToken({
       employee_id: account.EMPLOYEE_ID,
       employee_name: account.EMPLOYEE.EMPLOYEE_NAME,
       username: account.USERNAME,
