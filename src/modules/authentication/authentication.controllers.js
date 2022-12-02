@@ -13,17 +13,11 @@ const handleLogin = async (req, res, next) => {
     });
 
     if (!account) {
-      throw new CustomError({
-        code: 404,
-        ...ERROR_MESSAGE.userDoesNotExist,
-      });
+      throw ERROR_MESSAGE.userDoesNotExist;
     }
 
     if (!(await comparePassword(password, account.PASSWORD))) {
-      throw new CustomError({
-        code: 401,
-        ...ERROR_MESSAGE.incorrectPassword,
-      });
+      throw ERROR_MESSAGE.incorrectPassword;
     }
 
     let access_token = generateAccessToken({
@@ -34,11 +28,7 @@ const handleLogin = async (req, res, next) => {
       role: account.ROLE,
     });
 
-    if (!access_token)
-      throw new CustomError({
-        code: 500,
-        ...ERROR_MESSAGE.invalidGeneratedAccessToken,
-      });
+    if (!access_token) throw ERROR_MESSAGE.invalidGeneratedAccessToken;
 
     return res.json({
       access_token: access_token,

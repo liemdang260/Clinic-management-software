@@ -6,13 +6,13 @@ export const isAuth = (req, _, next) => {
     const { access_token } = req.headers;
 
     if (!access_token) {
-      throw new CustomError({ code: 401, ...ERROR_MESSAGE.invalidAccessToken });
+      throw ERROR_MESSAGE.invalidAccessToken;
     }
 
     const verify = decryptAccessToken(access_token);
 
     if (!verify) {
-      throw new CustomError({ code: 401, ...ERROR_MESSAGE.invalidAccessToken });
+      throw ERROR_MESSAGE.invalidAccessToken;
     }
 
     req.userInfo = verify.payload;

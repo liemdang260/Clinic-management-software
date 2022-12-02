@@ -21,24 +21,29 @@ class CustomError {
 export default CustomError;
 
 export const ERROR_MESSAGE = {
-  invalidGeneratedAccessToken: {
+  invalidGeneratedAccessToken: new CustomError({
+    code: 500,
     name: "invalid GeneratedAccessToken",
     message: "Invalid generated access token",
-  },
-  userDoesNotExist: {
+  }),
+  userDoesNotExist: new CustomError({
+    code: 404,
     name: "userDoesNotExist",
     message: "User does not exist",
-  },
-  incorrectPassword: {
+  }),
+  incorrectPassword: new CustomError({
+    code: 401,
     name: "incorrectPassword",
     message: "Incorrect password",
-  },
-  invalidAccessToken: {
+  }),
+  invalidAccessToken: new CustomError({
+    code: 401,
     name: "invalidAccessToken",
     message: "Invalid access token",
-  },
-  serverError: {
+  }),
+  serverError: new CustomError({
+    code: 500,
     name: "serverError",
     message: "Server error",
-  },
+  }),
 };

@@ -53,9 +53,6 @@ export const decryptAccessToken = (token) => {
     });
   } catch (error) {
     console.log("loi giai ma access token!");
-    throw new CustomError({
-      code: 401,
-      ...ERROR_MESSAGE.invalidAccessToken,
-    });
+    throw ERROR_MESSAGE.invalidAccessToken;
   }
 };
