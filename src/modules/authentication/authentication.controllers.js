@@ -20,7 +20,7 @@ const handleLogin = async (req, res, next) => {
       throw ERROR_MESSAGE.incorrectPassword;
     }
 
-    let access_token = generateAccessToken({
+    const access_token = generateAccessToken({
       employee_id: account.EMPLOYEE_ID,
       employee_name: account.EMPLOYEE.EMPLOYEE_NAME,
       username: account.USERNAME,

@@ -10,7 +10,7 @@ dotenv.config();
 
 const { sequelize } = database;
 const app = express();
-let server = createServer(app);
+const server = createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());

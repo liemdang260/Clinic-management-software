@@ -8,8 +8,8 @@ const { EMPLOYEE, ACCOUNT, ROOM, SERVICE } = database;
 const controller = () => {
   const getProfileById = async (req, res) => {
     try {
-      let id = req.userInfo.employee_id;
-      let user = await EMPLOYEE.findOne({
+      const id = req.userInfo.employee_id;
+      const user = await EMPLOYEE.findOne({
         where: { EMPLOYEE_ID: id },
         include: ["position"],
       });
@@ -25,8 +25,8 @@ const controller = () => {
 
   const updateProfileById = async (req, res) => {
     try {
-      let id = req.userInfo.employee_id;
-      let user = await EMPLOYEE.findOne({
+      const id = req.userInfo.employee_id;
+      const user = await EMPLOYEE.findOne({
         where: { EMPLOYEE_ID: id },
       });
       if (user) {
@@ -57,7 +57,7 @@ const controller = () => {
   const changPassword = async (req, res) => {
     console.log(req.userInfo);
     try {
-      let account = await ACCOUNT.findOne({
+      const account = await ACCOUNT.findOne({
         where: {
           [Op.and]: [
             { USERNAME: req.userInfo.username },
@@ -78,7 +78,7 @@ const controller = () => {
 
   const getAllService = async (req, res) => {
     try {
-      let service = await SERVICE.findAll();
+      const service = await SERVICE.findAll();
       return res.json(service);
     } catch (error) {
       console.log(error);
@@ -88,7 +88,7 @@ const controller = () => {
 
   const getAllDoctor = async (req, res) => {
     try {
-      let doctor = await ROOM.findAll({
+      const doctor = await ROOM.findAll({
         include: ["DOCTOR"],
       });
       return res.json(doctor);

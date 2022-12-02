@@ -4,10 +4,10 @@ import moment from "moment";
 const controller = () => {
   const createAppointmentRequest = async (req, res) => {
     console.log(req.body);
-    let patientData = req.body.patient;
-    let appointmentData = req.body.appointment;
+    const patientData = req.body.patient;
+    const appointmentData = req.body.appointment;
     try {
-      let request = new APPOINTMENTREQUEST({
+      const request = new APPOINTMENTREQUEST({
         CREATE_AT: new Date(),
         PATIENT_NAME: patientData.patient_name,
         IDENTITY_NUMBER: patientData.identity_number,

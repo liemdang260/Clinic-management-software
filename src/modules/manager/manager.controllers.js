@@ -8,7 +8,7 @@ const controller = () => {
   const createEmployee = async (req, res) => {
     console.log(req.body);
     try {
-      let employee = new EMPLOYEE({
+      const employee = new EMPLOYEE({
         EMPLOYEE_NAME: req.body.EMPLOYEE_NAME,
         IDENTITY_NUMBER: req.body.IDENTITY_NUMBER,
         PHONE: req.body.PHONE,
@@ -21,7 +21,7 @@ const controller = () => {
       });
       await employee.save();
 
-      let account = new ACCOUNT({
+      const account = new ACCOUNT({
         EMPLOYEE_ID: employee.EMPLOYEE_ID,
         USERNAME: req.body.USERNAME,
         PASSWORD: enCryptPassword(req.body.PASSWORD),
@@ -39,7 +39,7 @@ const controller = () => {
 
   const getAllEmployee = async (req, res) => {
     try {
-      let employee = await EMPLOYEE.findAll({
+      const employee = await EMPLOYEE.findAll({
         //raw: true,
       });
       return res.json(employee);
@@ -50,8 +50,8 @@ const controller = () => {
 
   const getEmployeeById = async (req, res) => {
     try {
-      let id = req.params.id;
-      let employee = await EMPLOYEE.findOne({
+      const id = req.params.id;
+      const employee = await EMPLOYEE.findOne({
         where: { EMPLOYEE_ID: id },
       });
       if (employee) {
@@ -66,8 +66,8 @@ const controller = () => {
 
   const updateEmployee = async (req, res) => {
     try {
-      let id = req.params.id;
-      let employee = await EMPLOYEE.findOne({
+      const id = req.params.id;
+      const employee = await EMPLOYEE.findOne({
         where: { EMPLOYEE_ID: id },
       });
       if (employee) {
@@ -98,8 +98,8 @@ const controller = () => {
 
   const deleteEmployee = async (req, res) => {
     try {
-      let id = req.params.id;
-      let employee = await EMPLOYEE.findOne({
+      const id = req.params.id;
+      const employee = await EMPLOYEE.findOne({
         where: { EMPLOYEE_ID: id },
       });
       if (employee) {
@@ -116,7 +116,7 @@ const controller = () => {
 
   const createService = async (req, res) => {
     try {
-      let service = new SERVICE({
+      const service = new SERVICE({
         SERVICE_NAME: req.body.name,
         FEE: req.body.fee,
       });
@@ -130,7 +130,7 @@ const controller = () => {
 
   const getAllService = async (req, res) => {
     try {
-      let service = await SERVICE.findAll();
+      const service = await SERVICE.findAll();
       return res.json(service);
     } catch (error) {
       console.log(error);
@@ -139,11 +139,11 @@ const controller = () => {
   };
 
   const changeMedicalExaminationFee = async (req, res) => {
-    let newFee = {
+    const newFee = {
       id: req.body.id,
       fee: req.body.fee,
     };
-    let fee = await SERVICE.findOne({
+    const fee = await SERVICE.findOne({
       where: {
         SERVICE_ID: newFee.id,
       },

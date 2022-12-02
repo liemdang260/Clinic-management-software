@@ -3,7 +3,7 @@ export const dateParse = (date) => {
 };
 
 export const today = () => {
-  let day = new Date(Date.now());
+  const day = new Date(Date.now());
   day.setHours(7, 0, 0);
   // let date = (new Date(Date.now()))
   // date.setHours(9,0,0)

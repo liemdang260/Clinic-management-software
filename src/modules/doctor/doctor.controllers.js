@@ -6,7 +6,7 @@ import moment from "moment";
 const controller = () => {
   const getRoom = async (req, res) => {
     try {
-      let room = await ROOM.findOne({
+      const room = await ROOM.findOne({
         attributes: ["ROOM_ID"],
         where: {
           DOCTOR_ID: req.userInfo.employee_id,
@@ -33,19 +33,19 @@ const controller = () => {
   const updateDiagnosticDT = async (req, res) => {
     console.log(req.body);
     try {
-      let id = req.body.id;
-      let diagnostic = await DIAGNOSTIC.findOne({
+      const id = req.body.id;
+      const diagnostic = await DIAGNOSTIC.findOne({
         where: { DIAGNOSTIC_ID: id },
       });
       if (diagnostic) {
-        let prescription = new PRESCRIPTION({
+        const prescription = new PRESCRIPTION({
           DOCTOR_ID: req.userInfo.employee_id,
           CREATE_AT: moment.utc(req.body.CREATE_AT, "DD/MM/YYYY h:mm:ss"),
         });
         await prescription.save();
-        let items = req.body.PRESCRIPTION;
+        const items = req.body.PRESCRIPTION;
         items.map(async (item) => {
-          let prescription_item = new PRESCRIPTION_ITEM({
+          const prescription_item = new PRESCRIPTION_ITEM({
             PRESCRIPTION_ID: prescription.PRESCRIPTION_ID,
             DRUG_NAME: item.DRUG_NAME,
             NUMBER: item.NUMBER,
