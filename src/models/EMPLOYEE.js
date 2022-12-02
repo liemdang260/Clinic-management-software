@@ -75,7 +75,7 @@ class EMPLOYEE extends Sequelize.Model {
     );
   }
 
-  static associate({ ACCOUNT, POSITION }) {
+  static associate({ ACCOUNT, POSITION, APPOINTMENT }) {
     EMPLOYEE.belongsTo(POSITION, {
       as: "POSITIONS",
       foreignKey: "POSITION",

@@ -1,5 +1,5 @@
-const Sequelize = require("sequelize");
-module.exports = (sequelize, DataTypes) => {
+import Sequelize from "sequelize";
+export default (sequelize, DataTypes) => {
   return TYPE_OF_EXAMINATION.init(sequelize, DataTypes);
 };
 

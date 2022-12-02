@@ -1,5 +1,5 @@
-const Sequelize = require("sequelize");
-module.exports = (sequelize, DataTypes) => {
+import Sequelize from "sequelize";
+export default (sequelize, DataTypes) => {
   return APPOINTMENT_STATUS.init(sequelize, DataTypes);
 };
 
