@@ -12,7 +12,7 @@ export const enCryptPassword = (password) => {
     })
     .catch((err) => {
       console.log(err);
-      throw new CustomError(500, ...ERROR_MESSAGE.serverError);
+      throw ERROR_MESSAGE.serverError;
     });
 };
 
@@ -36,10 +36,7 @@ export const generateAccessToken = (payload) => {
     );
   } catch (error) {
     console.log(`Loi tao accesstoken: ${error}`);
-    throw new CustomError({
-      code: 500,
-      ...ERROR_MESSAGE.invalidGeneratedAccessToken,
-    });
+    throw ERROR_MESSAGE.invalidGeneratedAccessToken;
   }
 };
 
