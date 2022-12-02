@@ -54,8 +54,8 @@ export const decryptAccessToken = async (token) => {
   } catch (error) {
     console.log("loi giai ma access token!");
     throw new CustomError({
-      code: 500,
-      ...ERROR_MESSAGE.invalidGeneratedAccessToken,
+      code: 401,
+      ...ERROR_MESSAGE.invalidAccessToken,
     });
   }
 };
