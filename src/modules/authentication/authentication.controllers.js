@@ -2,15 +2,18 @@ import {
   comparePassword,
   generateAccessToken,
 } from "./authentication.methods.js";
-import { findAccoutByUsername } from "../../services/databaseServices/index.js";
-import CustomError, { ERROR_MESSAGE } from "../../services/customError.js";
+import { AccountServices } from "../../services/databaseServices/ACCOUNT.services.js";
+import { ERROR_MESSAGE } from "../../services/customError.js";
 
 const handleLogin = async (req, res, next) => {
   const { username, password } = req.body;
   try {
-    const account = await findAccoutByUsername(username, {
-      include: ["EMPLOYEE"],
-    });
+    const account = await AccountServices.instance.findAccoutByUsername(
+      username,
+      {
+        include: ["EMPLOYEE"],
+      },
+    );
 
     if (!account) {
       throw ERROR_MESSAGE.userDoesNotExist;

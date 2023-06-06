@@ -46,4 +46,14 @@ export const ERROR_MESSAGE = {
     name: "serverError",
     message: "Server error",
   }),
+  emptyRequestBody: new CustomError({
+    code: 204,
+    name: "emptyRequestBody",
+    message: "Empty request body",
+  }),
+  invalidPatientId: new CustomError({
+    code: 404,
+    name: "invalidPatientId",
+    message: "Invalid patient id",
+  }),
 };

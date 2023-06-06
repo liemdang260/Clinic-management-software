@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import CustomError, { ERROR_MESSAGE } from "../../services/customError.js";
+import { ERROR_MESSAGE } from "../../services/customError.js";
 
 //TODO fix bug
 export const enCryptPassword = (password) => {
@@ -8,6 +8,7 @@ export const enCryptPassword = (password) => {
   bcrypt
     .hash(password, saltRounds)
     .then((result) => {
+      console.log(result);
       return result;
     })
     .catch((err) => {

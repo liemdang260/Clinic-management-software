@@ -5,102 +5,75 @@ const {
   PATIENT,
   DIAGNOSTIC,
   APPOINTMENTREQUEST,
-  EMPLOYEE,
   SERVICEFORDIAGNOSTIC,
 } = database;
 import diagnosticStack from "../../static/stack.js";
 import moment from "moment";
 import { Op, QueryTypes } from "sequelize";
+import { AppointmentService } from "../../services/databaseServices/appointment.services.js";
+import { ERROR_MESSAGE } from "../../services/customError.js";
+import { PatientService } from "../../services/databaseServices/patient.services.js";
 
 const controller = () => {
   const createAppointment = async (req, res) => {
     try {
-      if (!req.body) {
-        res.status(400).send({
-          message: "Không để ô trống!",
-        });
-      }
-      const id = req.body.patient.id;
-      const identityNumber = req.body.patient.identity_number;
-      let patient;
-      //kiem tra patient co ton tai chua
-      const checkPatient = async (condition) => {
-        try {
-          const oldPatient = await PATIENT.findOne(condition);
-          if (!oldPatient) {
-            return null;
-          }
-          return oldPatient;
-        } catch (error) {
-          console.log(error);
-          throw Error;
-        }
-      };
+      if (!req.body) throw ERROR_MESSAGE.emptyRequestBody;
+      console.log(req.body);
+
+      const { patient: patientInfo, appointment: appointmentInfo } = req.body;
+      const { id, identity_number: identityNumber } = patientInfo;
+
+      let patientHasExist = false;
+      let patientId = id;
+
       if (id) {
-        try {
-          patient = await checkPatient({ where: { PATIENT_ID: id } });
-          if (!patient)
-            return res.status(404).send("Không tìm thấy bệnh nhân nào!");
-        } catch (error) {
-          console.log(error);
-          throw Error;
+        const patient = await PatientService.instance.getPatientById(id);
+        if (!patient) throw ERROR_MESSAGE.invalidPatientId;
+        else {
+          patientHasExist = true;
         }
-      } else {
-        try {
-          patient = await checkPatient({
-            where: { IDENTITY_NUMBER: identityNumber },
+      } else if (identityNumber) {
+        const patient =
+          await PatientService.instance.getPatientByIdentityNumber(
+            identityNumber,
+          );
+
+        if (patient) {
+          patientHasExist = true;
+        }
+
+        if (!patientHasExist) {
+          const newPatient = PatientService.instance.addNewPatient({
+            patientInfo,
           });
-        } catch (error) {
-          console.log(error);
-          throw Error;
-        }
-        if (!patient) {
-          try {
-            const newPatient = req.body.patient;
-            patient = new PATIENT({
-              PATIENT_NAME: newPatient.patient_name,
-              IDENTITY_NUMBER: newPatient.identity_number,
-              PHONE: newPatient.phone,
-              GENDER: newPatient.gender,
-              DATE_OF_BIRTH: moment(newPatient.date_of_birth, "DD/MM/YYYY"),
-              ADDRESS: newPatient.address,
-            });
-            await patient.save();
-          } catch (error) {
-            console.log(error);
-            throw Error(error);
-          }
+          patientId = newPatient.PATIENT_ID;
         }
       }
-      const appointment = new APPOINTMENT({
-        PATIENT_ID: patient.PATIENT_ID,
-        DOCTOR_ID: req.body.appointment.doctor_id,
-        TIMES: moment.utc(req.body.appointment.time, "DD/MM/YYYY h:mm:ss"),
+      const appointment = await AppointmentService.instance.createAppointMent({
+        ...appointmentInfo,
+        patientId: patientId,
       });
-      await appointment.save();
-      return res.status(200).send("Đã thêm lịch hẹn thành công!");
+      return res.status(200).json(appointment);
     } catch (e) {
       console.log(e);
-      return res.status(500).send("Lỗi sever!");
+      throw e;
     }
   };
 
   const getAllAppointment = async (_, res) => {
     try {
-      const appointment = await APPOINTMENT.findAll({
-        //attributes: []
-      });
+      const appointment = await AppointmentService.instance.getAllAppointment();
       return res.json(appointment);
     } catch (e) {
       console.log(e);
-      return res.status(500).send("Lỗi sever!");
+      throw ERROR_MESSAGE.serverError;
     }
   };
 
   const getAppointmentInDay = async (req, res) => {
     try {
       const fromday = req.body.fromday;
-      const today = req.body.fromday;
+      // const today = req.body.fromday;
       const appointment = await APPOINTMENT.findAll({
         //where: { [Op.and]: [ { CREATE_AT: { [Op.gte]: fromday } }, { CREATE_AT: { [Op.lte]: today }} ] }
         where: { CREATE_AT: { [Op.gte]: fromday } },
@@ -121,7 +94,7 @@ const controller = () => {
     const dateInWeek = moment(req.body.date, "DD/MM/YYYY");
     try {
       const appointment = await sequelize.query(
-        `SELECT AP.APPOINTMENT_ID, AP.TIMES, PA.PATIENT_ID, PA.PATIENT_NAME, EP.EMPLOYEE_ID, EP.EMPLOYEE_NAME, AP.[TYPE] FROM APPOINTMENT AP JOIN PATIENT PA ON AP.PATIENT_ID = PA.PATIENT_ID JOIN EMPLOYEE EP ON AP.DOCTOR_ID = EP.EMPLOYEE_ID WHERE DATEPART(WEEK, [TIMES]) = DATEPART(WEEK, ?)`,
+        `SELECT AP.APPOINTMENT_ID, AP.CREATE_AT, AP.TIME, PA.PATIENT_ID, PA.PATIENT_NAME, EP.EMPLOYEE_ID, EP.EMPLOYEE_NAME, AP.TYPE_ID FROM APPOINTMENT AP JOIN PATIENT PA ON AP.PATIENT_ID = PA.PATIENT_ID JOIN EMPLOYEE EP ON AP.DOCTOR_ID = EP.EMPLOYEE_ID WHERE WEEK(AP.TIME) = WEEK(?)`,
         {
           replacements: [dateInWeek.toDate()],
           type: QueryTypes.SELECT,
@@ -194,12 +167,9 @@ const controller = () => {
   //3:đã hủy
   const getAppointmentRequest = async (req, res) => {
     try {
-      const request = await APPOINTMENTREQUEST.findAll({
-        where: {
-          [Op.or]: [{ STATUS: 0 }, { STATUS: 1 }],
-        },
-      });
-      return res.json(request);
+      const appointmentRequest =
+        await AppointmentService.instance.getAllAppointmentRequest();
+      return res.json(appointmentRequest);
     } catch (error) {
       console.log(error);
       return res.status(500).send("Lỗi server");

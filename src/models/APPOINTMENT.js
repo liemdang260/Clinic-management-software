@@ -14,11 +14,11 @@ class APPOINTMENT extends Sequelize.Model {
           primaryKey: true,
         },
         CREATE_AT: {
-          type: DataTypes.DATEONLY,
+          type: DataTypes.DATE,
           allowNull: false,
         },
         TIME: {
-          type: DataTypes.DATEONLY,
+          type: DataTypes.DATE,
           allowNull: false,
         },
         PATIENT_ID: {
