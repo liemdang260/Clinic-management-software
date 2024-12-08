@@ -1,29 +1,33 @@
-const router = require('express').Router()
-const authenticationRouter = require("../modules/authentication/authentication.router")
-const managerRouter = require('../modules/manager/manager.router')
-const receptionRouter = require('../modules/reception/reception.router')
-const userRouter = require('../modules/user/user.router')
+import { Router } from "express";
+import authenticationRouter from "../modules/authentication/authentication.router.js";
+import managerRouter from "../modules/manager/manager.router.js";
+import receptionRouter from "../modules/reception/reception.router.js";
+import doctorRouter from "../modules/doctor/doctor.router.js";
+import userRouter from "../modules/user/user.router.js";
+import customerRouter from "../modules/customer/customer.router.js";
+import { isAuth } from "../modules/authentication/authentication.middlewares.js";
+import { isManager } from "../modules/manager/manager.middlewares.js";
+import { isDoctor } from "../modules/doctor/doctor.middlewares.js";
 
-const {isAuth} = require('../modules/authentication/authentication.middlewares')
-const {isManager} = require('../modules/manager/manager.middlewares')
+const router = Router();
 
+router.use((req, res, next) => {
+  console.log(req.method, req.url);
+  return next();
+});
 
+router.get("/", (req, res) => {
+  res.send(`APP IS RUNNING ON ${process.env.PORT}`);
+});
 
-router.use((req,res,next)=>{
-    console.log(req.method,req.url)
-    return next();
-})
+router.get("/favicon.ico", () => {});
+router.use("/login", authenticationRouter);
+router.use("/customer", customerRouter);
 
-router.use('/login',authenticationRouter)
+router.use(isAuth);
+router.use("/user", userRouter);
+router.use("/doctor", isDoctor, doctorRouter);
+router.use("/manager", isManager, managerRouter);
+router.use("/reception", receptionRouter);
 
-
-router.use(isAuth)
-router.use('/users',userRouter)
-router.get('/',(req,res)=>{
-    res.send("APP RUNNING AT PORT 9999")
-})
-
-
-router.use('/manager', isManager,managerRouter)
-router.use('/reception',receptionRouter)
-module.exports = router
+export default router;

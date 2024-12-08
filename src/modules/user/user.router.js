@@ -1,5 +1,12 @@
-const router = require('express').Router()
-const userController = require('./user.controllers')
-const authMiddleware = require('../authentication/authentication.middlewares')
-router.get('/profile',authMiddleware.isAuth,userController.getUserById)
-module.exports = router
+import { Router } from "express";
+import { getProfileById, updateProfileById } from "../user/user.controllers.js";
+import { isAuth } from "../authentication/authentication.middlewares.js";
+
+const router = Router();
+
+router.get("/profile", isAuth, getProfileById);
+router.put("/profile", updateProfileById);
+
+//quên mật khẩu
+
+export default router;

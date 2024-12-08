@@ -1,20 +1,19 @@
 import { Model, DataTypes } from "sequelize";
 import connection from "../connectDB/db.js";
 
-export class PATIENT extends Model {
-  static associate({ DIAGNOSTIC, APPOINTMENT }) {
-    this.hasMany(DIAGNOSTIC, { as: "DIAGNOSTICs", foreignKey: "PATIENT_ID" });
-    this.hasMany(APPOINTMENT, { as: "APPOINTMENTs", foreignKey: "PATIENT_ID" });
-  }
-}
+export class APPOINTMENTREQUEST extends Model {}
 
-PATIENT.init(
+APPOINTMENTREQUEST.init(
   {
-    PATIENT_ID: {
+    REQUEST_ID: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
+    },
+    CREATE_AT: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
     PATIENT_NAME: {
       type: DataTypes.STRING(50),
@@ -40,21 +39,29 @@ PATIENT.init(
       type: DataTypes.STRING(100),
       allowNull: true,
     },
-    OCCUPATION: {
-      type: DataTypes.STRING(50),
+    DOCTOR_ID: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    TIMES: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    STATUS: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
   },
   {
     sequelize: connection.instance.getClient(),
-    tableName: "PATIENT",
+    tableName: "APPOINTMENTREQUEST",
     schema: "dbo",
     timestamps: false,
     indexes: [
       {
-        name: "PK__PATIENT__AA0B60687E5AEFAE",
+        name: "PK__APPOINTM__71D2766C649828FB",
         unique: true,
-        fields: [{ name: "PATIENT_ID" }],
+        fields: [{ name: "REQUEST_ID" }],
       },
     ],
   }

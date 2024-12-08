@@ -1,5 +1,8 @@
-const authenticationRouter = require("../authentication/authentication.controllers")
-const router = require('express').Router()
-router.post('/',authenticationRouter.handleLogin)
+import { handleLogin } from "../authentication/authentication.controllers.js";
+import { Router } from "express";
 
-module.exports = router
+const router = Router();
+
+router.post("/", handleLogin);
+
+export default router;
