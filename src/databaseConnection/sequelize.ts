@@ -15,8 +15,6 @@ class SequelizeConnection {
   }
 
   async configure(conectionString: string) {
-    console.log(getDirName(import.meta.url));
-
     this.client = new Sequelize(conectionString, {
       models: [getDirName(import.meta.url) + "/**/*.model.ts"],
     });
