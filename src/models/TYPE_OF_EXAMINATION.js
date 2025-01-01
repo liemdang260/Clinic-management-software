@@ -1,43 +1,43 @@
 import Sequelize from "sequelize";
 export default (sequelize, DataTypes) => {
-  return POSITION.init(sequelize, DataTypes);
+  return TYPE_OF_EXAMINATION.init(sequelize, DataTypes);
 };
 
-class POSITION extends Sequelize.Model {
+class TYPE_OF_EXAMINATION extends Sequelize.Model {
   static init(sequelize, DataTypes) {
     return super.init(
       {
-        POSITION_ID: {
+        TYPE_ID: {
           autoIncrement: true,
           type: DataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
         },
-        POSITION_NAME: {
+        TYPE_NAME: {
           type: DataTypes.STRING(30),
-          allowNull: true,
-        },
-        SPECIALTY: {
-          type: DataTypes.STRING(200),
-          allowNull: true,
+          allowNull: false,
         },
       },
       {
         sequelize,
-        tableName: "POSITION",
+        tableName: "TYPE_OF_EXAMINATION",
         timestamps: false,
         indexes: [
           {
             name: "PRIMARY",
             unique: true,
             using: "BTREE",
-            fields: [{ name: "POSITION_ID" }],
+            fields: [{ name: "TYPE_ID" }],
           },
         ],
       },
     );
   }
-  static associate({ EMPLOYEE }) {
-    this.hasMany(EMPLOYEE, { as: "EMPLOYEES", foreignKey: "POSITION" });
+
+  static associate({ APPOINTMENT }) {
+    TYPE_OF_EXAMINATION.hasMany(APPOINTMENT, {
+      as: "appointments",
+      foreignKey: "TYPE_ID",
+    });
   }
 }

@@ -1,50 +1,55 @@
-const Sequelize = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+import Sequelize from "sequelize";
+export default (sequelize, DataTypes) => {
   return ACCOUNT.init(sequelize, DataTypes);
-}
+};
 
 class ACCOUNT extends Sequelize.Model {
   static init(sequelize, DataTypes) {
-    super.init({
-      EMPLOYEE_ID: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true
-      },
-      USERNAME: {
-        type: DataTypes.STRING(50),
-        allowNull: true
-      },
-      PASSWORD: {
-        type: DataTypes.STRING(50),
-        allowNull: true
-      },
-      ISACTIVE: {
-        type: DataTypes.BOOLEAN,
-        allowNull: true
-      },
-      ROLE: {
-        type: DataTypes.INTEGER,
-        allowNull: true
-      }
-    }, {
-      sequelize,
-      tableName: 'ACCOUNT',
-      schema: 'dbo',
-      timestamps: false,
-      indexes: [
-        {
-          name: "PK__ACCOUNT__CBA14F4835C32BC1",
-          unique: true,
-          fields: [
-            { name: "EMPLOYEE_ID" },
-          ]
+    return super.init(
+      {
+        EMPLOYEE_ID: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          primaryKey: true,
+          references: {
+            model: "EMPLOYEE",
+            key: "EMLOYEE_ID",
+          },
         },
-      ]
-    });
-    return ACCOUNT;
+        USERNAME: {
+          type: DataTypes.STRING(30),
+          allowNull: false,
+        },
+        PASSWORD: {
+          type: DataTypes.STRING(50),
+          allowNull: false,
+        },
+        ISACTIVE: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+        },
+        ROLE: {
+          type: DataTypes.TINYINT,
+          allowNull: false,
+        },
+      },
+      {
+        sequelize,
+        tableName: "ACCOUNT",
+        timestamps: false,
+        indexes: [
+          {
+            name: "PRIMARY",
+            unique: true,
+            using: "BTREE",
+            fields: [{ name: "EMPLOYEE_ID" }],
+          },
+        ],
+      },
+    );
   }
+
   static associate({ EMPLOYEE }) {
-    this.belongsTo(EMPLOYEE, { foreignKey: 'EMPLOYEE_ID' })
+    this.belongsTo(EMPLOYEE, { as: "EMPLOYEE", foreignKey: "EMPLOYEE_ID" });
   }
 }

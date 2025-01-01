@@ -1,111 +1,168 @@
-const { sequelize, EMPLOYEE, SERVICE } = require('../../models')
-const moment = require('moment')
-exports.createEmployee = async (req, res) => {
+import database from "../../models/index.js";
+import { enCryptPassword } from "../authentication/authentication.methods.js";
+
+const { sequelize, EMPLOYEE, SERVICE, ACCOUNT } = database;
+
+import moment from "moment";
+const controller = () => {
+  const createEmployee = async (req, res) => {
+    console.log(req.body);
     try {
-        if (!req.body) {
-            res.status(400).send({
-                message: "Không để ô trống"
-            })
-        }
-        let identity_number = req.body.IDENTITY_NUMBER
-        let employee = await EMPLOYEE.findOne({
-            where: { IDENTITY_NUMBER: identity_number }
-        })
-        if (!employee) {
-            let newEmployee = new EMPLOYEE({
-                EMPLOYEE_NAME: req.body.EMPLOYEE_NAME,
-                IDENTITY_NUMBER: req.body.IDENTITY_NUMBER,
-                PHONE: req.body.PHONE,
-                GENDER: req.body.GENDER,
-                DATE_OF_BIRTH: moment.utc(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY h:mm:ss'),
-                EMPLOYEE_ADDRESS: req.body.EMPLOYEE_ADDRESS,
-                POSITION: req.body.POSITION
-            })
-            await newEmployee.save()
-        } else {
-            return res.status(409).send('Số CMND đã tồn tại!')
-        }
-        return res.status(200).send("Tạo thành công!")
+      const employee = new EMPLOYEE({
+        EMPLOYEE_NAME: req.body.EMPLOYEE_NAME,
+        IDENTITY_NUMBER: req.body.IDENTITY_NUMBER,
+        PHONE: req.body.PHONE,
+        GENDER: req.body.GENDER,
+        DATE_OF_BIRTH: req.body.DATE_OF_BIRTH,
+        EMPLOYEE_ADDRESS: req.body.EMPLOYEE_ADDRESS,
+        POSITION: req.body.POSITION,
+        START_WORK_DATE: req.body.START_WORK_DATE,
+        SALARY: req.body.SALARY,
+      });
+      await employee.save();
+
+      const account = new ACCOUNT({
+        EMPLOYEE_ID: employee.EMPLOYEE_ID,
+        USERNAME: req.body.USERNAME,
+        PASSWORD: enCryptPassword(req.body.PASSWORD),
+        ISACTIVE: true,
+        ROLE: req.body.POSITION,
+      });
+
+      await account.save();
+      return res.send("Tạo nhân viên thành công");
     } catch (error) {
-        console.log(error)
-        return res.status(500).send('Lỗi sever!')
+      console.log(error);
+      return res.status(500).send("Lỗi sever!");
     }
-}
-exports.getAllEmployee = async (req, res) => {
+  };
+
+  const getAllEmployee = async (req, res) => {
     try {
-        let employee = await EMPLOYEE.findAll({
-            //raw: true,
-        })
-        return res.json(employee)
+      const employee = await EMPLOYEE.findAll({
+        //raw: true,
+      });
+      return res.json(employee);
     } catch (e) {
-        return res.status(500).send('Lỗi sever!')
+      return res.status(500).send("Lỗi sever!");
     }
-}
-exports.getEmployeeById = async (req, res) => {
+  };
+
+  const getEmployeeById = async (req, res) => {
     try {
-        let id = req.params.id
-        let employee = await EMPLOYEE.findOne({
-            where: { EMPLOYEE_ID: id }
-        })
-        if (employee) {
-            return res.json(employee)
-        } else {
-            return res.status(404).send('Không có nhân viên này!')
-        }
+      const id = req.params.id;
+      const employee = await EMPLOYEE.findOne({
+        where: { EMPLOYEE_ID: id },
+      });
+      if (employee) {
+        return res.json(employee);
+      } else {
+        return res.status(404).send("Không có nhân viên này!");
+      }
     } catch (error) {
-        return res.status(500).send('Lỗi sever!')
+      return res.status(500).send("Lỗi sever!");
     }
-}
-exports.updateEmployee = async (req, res) => {
+  };
+
+  const updateEmployee = async (req, res) => {
     try {
-        let id = req.params.id
-        let employee = await EMPLOYEE.findOne({
-            where: { EMPLOYEE_ID: id }
-        })
-        if (employee) {
-            employee.EMPLOYEE_NAME = (req.body.EMPLOYEE_NAME) ? req.body.EMPLOYEE_NAME : employee.EMPLOYEE_NAME
-            employee.IDENTITY_NUMBER = (req.body.IDENTITY_NUMBER) ? req.body.IDENTITY_NUMBER : employee.IDENTITY_NUMBER
-            employee.PHONE = (req.body.PHONE) ? req.body.PHONE : employee.PHONE
-            employee.GENDER = (req.body.GENDER) ? req.body.GENDER : employee.GENDER
-            employee.DATE_OF_BIRTH = (req.body.DATE_OF_BIRTH) ? moment(req.body.DATE_OF_BIRTH, 'DD/MM/YYYY') : employee.DATE_OF_BIRTH
-            employee.EMPLOYEE_ADDRESS = (req.body.EMPLOYEE_ADDRESS) ? req.body.EMPLOYEE_ADDRESS : employee.EMPLOYEE_ADDRESS
-            employee.POSITION = (req.body.POSITION) ? req.body.POSITION : employee.POSITION
-            await employee.save()
-            return res.status(200).send('Cập nhật thành công!')
-        }
+      const id = req.params.id;
+      const employee = await EMPLOYEE.findOne({
+        where: { EMPLOYEE_ID: id },
+      });
+      if (employee) {
+        employee.EMPLOYEE_NAME = req.body.EMPLOYEE_NAME
+          ? req.body.EMPLOYEE_NAME
+          : employee.EMPLOYEE_NAME;
+        employee.IDENTITY_NUMBER = req.body.IDENTITY_NUMBER
+          ? req.body.IDENTITY_NUMBER
+          : employee.IDENTITY_NUMBER;
+        employee.PHONE = req.body.PHONE ? req.body.PHONE : employee.PHONE;
+        employee.GENDER = req.body.GENDER ? req.body.GENDER : employee.GENDER;
+        employee.DATE_OF_BIRTH = req.body.DATE_OF_BIRTH
+          ? moment(req.body.DATE_OF_BIRTH, "DD/MM/YYYY")
+          : employee.DATE_OF_BIRTH;
+        employee.EMPLOYEE_ADDRESS = req.body.EMPLOYEE_ADDRESS
+          ? req.body.EMPLOYEE_ADDRESS
+          : employee.EMPLOYEE_ADDRESS;
+        employee.POSITION = req.body.POSITION
+          ? req.body.POSITION
+          : employee.POSITION;
+        await employee.save();
+        return res.status(200).send("Cập nhật thành công!");
+      }
     } catch (error) {
-        return res.status(500).send('Lỗi sever!')
+      return res.status(500).send("Lỗi sever!");
     }
-}
-exports.deleteEmployee = async (req, res) => {
+  };
+
+  const deleteEmployee = async (req, res) => {
     try {
-        let id = req.params.id
-        let employee = await EMPLOYEE.findOne({
-            where: { EMPLOYEE_ID: id }
-        })
-        if (employee) {
-            await employee.destroy()
-            return res.send('Xóa thành công!')
-        }
-        else {
-            return res.status(404).send('Không có gì để xóa!')
-        }
+      const id = req.params.id;
+      const employee = await EMPLOYEE.findOne({
+        where: { EMPLOYEE_ID: id },
+      });
+      if (employee) {
+        await employee.destroy();
+        return res.send("Xóa thành công!");
+      } else {
+        return res.status(404).send("Không có gì để xóa!");
+      }
     } catch (e) {
-        console.log(e)
-        return res.status(500).send('Lỗi sever!')
+      console.log(e);
+      return res.status(500).send("Lỗi sever!");
     }
-}
-exports.changeMedicalExaminationFee = async (req, res) => {
-    let newFee = {
-        id: req.body.id,
-        fee: req.body.fee
+  };
+
+  const createService = async (req, res) => {
+    try {
+      const service = new SERVICE({
+        SERVICE_NAME: req.body.name,
+        FEE: req.body.fee,
+      });
+      await service.save();
+      return res.json("Thêm thành công");
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json("Lỗi server");
     }
-    let fee = await SERVICE.findOne({
-        where: {
-            SERVICE_ID: newFee.id
-        }
-    })
-    fee.FEE = newFee.fee
+  };
+
+  const getAllService = async (req, res) => {
+    try {
+      const service = await SERVICE.findAll();
+      return res.json(service);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json("Lỗi server");
+    }
+  };
+
+  const changeMedicalExaminationFee = async (req, res) => {
+    const newFee = {
+      id: req.body.id,
+      fee: req.body.fee,
+    };
+    const fee = await SERVICE.findOne({
+      where: {
+        SERVICE_ID: newFee.id,
+      },
+    });
+    fee.FEE = newFee.fee;
     await fee.save();
-    res.send(fee)
-}
+    res.send(fee);
+  };
+
+  return {
+    createEmployee,
+    getAllEmployee,
+    getEmployeeById,
+    updateEmployee,
+    deleteEmployee,
+    createService,
+    getAllService,
+    changeMedicalExaminationFee,
+  };
+};
+
+export default controller();

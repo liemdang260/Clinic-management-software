@@ -1,16 +1,7 @@
-const Employee = require('./models/EMPLOYEE')
+import { enCryptPassword } from "./modules/authentication/authentication.methods.js";
 
-const main = async()=>{
-    try {
-        const data = Employee.findAll({
-            where:{
-                EMPLOYEE_NAME:'Liem'
-            },
-            include:['position']
-        })
-        console.log(data)
-    } catch (error) {
-        console.log(error)
-    }
+async function test() {
+  const pass = await enCryptPassword("tieptan");
+  console.log(pass);
 }
-main()
+test();

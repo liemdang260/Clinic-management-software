@@ -1,14 +1,26 @@
-const {decryptAccessToken} = require('./authentication.methods')
-exports.isAuth = async(req,res,next)=>{
-    let access_token = req.headers.access_token
-    if(!access_token){
-        return res.status(401).send('Khong tim thay access token!')
+import CustomError, { ERROR_MESSAGE } from "../../services/customError.js";
+import { decryptAccessToken } from "./authentication.methods.js";
+
+export const isAuth = (req, _, next) => {
+  try {
+    const { access_token } = req.headers;
+
+    if (!access_token) {
+      throw ERROR_MESSAGE.invalidAccessToken;
     }
-    let verify = await decryptAccessToken(access_token)
-    if(!verify){
-        res.status(401).send('Ban khong co quyen truy cap vao tinh nang nay!')
+
+    const verify = decryptAccessToken(access_token);
+
+    if (!verify) {
+      throw ERROR_MESSAGE.invalidAccessToken;
     }
-    let payload = verify.payload
-    req.userInfo = payload
-    return next()
-}
+
+    req.userInfo = verify.payload;
+
+    return next();
+  } catch (error) {
+    console.log("loi access token");
+
+    next(error);
+  }
+};

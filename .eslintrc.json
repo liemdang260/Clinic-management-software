@@ -1,0 +1,29 @@
+{
+  "env": {
+    "node": true,
+    "browser": true,
+    "es2020":true
+  },
+  "extends": ["prettier"],
+  "plugins": ["prettier"],
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2022
+  },
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "singleQuote": false
+      }
+    ],
+    "linebreak-style": "off",
+    "indent": ["off", { "tabWidth": 2 }],
+    "semi": ["error"],
+    "prefer-const": ["error", {
+      "destructuring": "any",
+      "ignoreReadBeforeAssign": false
+    }],
+    "no-unused-vars": [2, {"vars": "all", "args": "after-used"}]
+  }
+}

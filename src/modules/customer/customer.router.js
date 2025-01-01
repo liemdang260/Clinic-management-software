@@ -1,4 +1,10 @@
-const router = require('express').Router()
+import customerController from "./customer.controller.js";
+import express from "express";
+const router = express.Router();
 
+router.post(
+  "/appointment-request",
+  customerController.createAppointmentRequest,
+);
 
-module.exports = router
+export default router;
