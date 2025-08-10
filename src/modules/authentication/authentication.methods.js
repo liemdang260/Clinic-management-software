@@ -2,19 +2,15 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ERROR_MESSAGE } from "../../services/customError.js";
 
-//TODO fix bug
-export const enCryptPassword = (password) => {
-  const saltRounds = process.env.SALT_ROUNDS || 10;
-  bcrypt
-    .hash(password, saltRounds)
-    .then((result) => {
-      console.log(result);
-      return result;
-    })
-    .catch((err) => {
-      console.log(err);
-      throw ERROR_MESSAGE.serverError;
-    });
+export const enCryptPassword = async (password) => {
+  const saltRounds = parseInt(process.env.SALT_ROUNDS) || 10;
+  try {
+    const hash = await bcrypt.hash(password, saltRounds);
+    return hash;
+  } catch (err) {
+    console.log(err);
+    throw ERROR_MESSAGE.serverError;
+  }
 };
 
 export const comparePassword = async (plainPassword, hashPassword) => {

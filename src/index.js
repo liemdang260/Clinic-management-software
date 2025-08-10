@@ -20,7 +20,7 @@ const startServer = async () => {
     await sequelize.authenticate();
     console.log("Database connected!");
     const PORT = process.env.PORT || 8080;
-    server.listen(PORT, (req, res) => {
+    server.listen(PORT, () => {
       console.log(`APP RUNNING AT PORT ${PORT}`);
     });
   } catch (error) {
@@ -31,7 +31,7 @@ const startServer = async () => {
 startServer().then(() => {
   socket.init(server);
   app.use((req, res, next) => {
-    req.io = socket.io();
+    req.io = socket.getIO();
     return next();
   });
   app.use("/", mainRouter);

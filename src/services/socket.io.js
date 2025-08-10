@@ -1,12 +1,9 @@
 import { Server } from "socket.io";
-// const stack = require('src/static/stack')
 
-const io = () => {
-  return io;
-};
+let io;
 
 const init = (server) => {
-  const io = new Server(server, { cors: { origin: "*" } });
+  io = new Server(server, { cors: { origin: "*" } });
   io.on("connection", (socket) => {
     console.log(socket.id);
     socket.on("disconnect", () => {
@@ -23,4 +20,6 @@ const init = (server) => {
   return io;
 };
 
-export default { io, init };
+const getIO = () => io;
+
+export default { init, getIO };
