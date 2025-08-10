@@ -162,9 +162,9 @@ const controller = () => {
       }
     } catch (e) {}
   };
-  //status: 0: chưa xác nhận, chưa xem, 1: đã xem, chưa xác nhận
-  //2: đã xác nhận
-  //3:đã hủy
+  // status: 0: unconfirmed and unseen, 1: viewed but unconfirmed
+  // 2: confirmed
+  // 3: canceled
   const getAppointmentRequest = async (req, res) => {
     try {
       const appointmentRequest =
@@ -276,7 +276,7 @@ const controller = () => {
       });
       let cmnd;
       const identityNumber = req.body.IDENTITY_NUMBER;
-      //kiem tra cmnd co ton tai chua
+      // check whether the ID number already exists
       const checkIdentity_number = async (condition) => {
         try {
           const oldIdentity_number = await PATIENT.findOne(condition);
@@ -482,7 +482,7 @@ const controller = () => {
         const diagnostic = DIAGNOSTIC.create({
           DOCTOR_ID: appointment.DOCTOR_ID,
           PATIENT_ID: appointment.PATIENT_ID,
-          CREATE_AT: moment.utc(req.body.CREATE_AT, "DD/MM/YYYY h:mm:ss"), // sữa lại thời gian hiện tại
+          CREATE_AT: moment.utc(req.body.CREATE_AT, "DD/MM/YYYY h:mm:ss"), // adjust to current time
         });
         await diagnostic.save();
       } else {

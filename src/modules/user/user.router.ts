@@ -10,6 +10,6 @@ router.put("/password", userController.changPassword);
 router.get("/medical-examination-fee", userController.getAllService);
 
 router.get("/doctor", userController.getAllDoctor);
-//quên mật khẩu
+// forgot password
 
 export default router;
