@@ -63,7 +63,7 @@ const controller = () => {
         diagnostic.TEMPERATURE = 3;
         await diagnostic.save();
       }
-      //UPDATE STATUS HANG DOI
+      // update queue status
       if (req.body.pnum == 1) {
         stack.room1.changeStatus(req.body.pnum, "diagnosed");
       } else {
