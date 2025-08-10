@@ -1,7 +1,7 @@
 import database from "../../models/index.js";
-const {
+  const {
   sequelize,
-  APPOINTMENT,
+  Appointment,
   Patient,
   DIAGNOSTIC,
   APPOINTMENTREQUEST,
@@ -74,9 +74,9 @@ const controller = () => {
     try {
       const fromday = req.body.fromday;
       // const today = req.body.fromday;
-      const appointment = await APPOINTMENT.findAll({
-        //where: { [Op.and]: [ { CREATE_AT: { [Op.gte]: fromday } }, { CREATE_AT: { [Op.lte]: today }} ] }
-        where: { CREATE_AT: { [Op.gte]: fromday } },
+      const appointment = await Appointment.findAll({
+        //where: { [Op.and]: [ { createAt: { [Op.gte]: fromday } }, { createAt: { [Op.lte]: today }} ] }
+        where: { createAt: { [Op.gte]: fromday } },
       });
       if (appointment) {
         return res.json(appointment);
@@ -110,9 +110,9 @@ const controller = () => {
   const getAppointmentById = async (req, res) => {
     const id = req.params.id;
     try {
-      const appointment = await APPOINTMENT.findOne({
+      const appointment = await Appointment.findOne({
         where: {
-          APPOINTMENT_ID: id,
+          appointmentId: id,
         },
       });
       if (appointment) return res.json(appointment);
@@ -126,16 +126,16 @@ const controller = () => {
   const updateAppointment = async (req, res) => {
     try {
       const id = req.params.id;
-      const appointment = await APPOINTMENT.findOne({
-        where: { APPOINTMENT_ID: id },
+      const appointment = await Appointment.findOne({
+        where: { appointmentId: id },
       });
       if (appointment) {
-        appointment.DOCTOR_ID = req.body.DOCTOR_ID
-          ? req.body.DOCTOR_ID
-          : appointment.DOCTOR_ID;
-        appointment.TIMES = req.body.TIMES
-          ? moment.utc(req.body.TIMES, "DD/MM/YYYY h:mm:ss")
-          : appointment.TIMES;
+        appointment.doctorId = req.body.doctorId
+          ? req.body.doctorId
+          : appointment.doctorId;
+        appointment.time = req.body.time
+          ? moment.utc(req.body.time, "DD/MM/YYYY h:mm:ss")
+          : appointment.time;
         appointment.patientId = req.body.patientId
           ? req.body.patientId
           : appointment.patientId;
@@ -151,8 +151,8 @@ const controller = () => {
   const deleteAppointment = async (req, res) => {
     try {
       const id = req.params.id;
-      const appointment = await APPOINTMENT.findOne({
-        where: { APPOINTMENT_ID: id },
+      const appointment = await Appointment.findOne({
+        where: { appointmentId: id },
       });
       if (appointment) {
         await appointment.destroy();
@@ -472,17 +472,17 @@ const controller = () => {
   };
 
   const createDianosticNew = async (req, res) => {
-    //FromAPPOINTMENT
+    //FromAppointment
     try {
       const id = req.params.id;
-      const appointment = await APPOINTMENT.findOne({
-        where: { APPOINTMENT_ID: id },
+      const appointment = await Appointment.findOne({
+        where: { appointmentId: id },
       });
       if (appointment) {
         const diagnostic = DIAGNOSTIC.create({
-          DOCTOR_ID: appointment.DOCTOR_ID,
+          doctorId: appointment.doctorId,
           patientId: appointment.patientId,
-          CREATE_AT: moment.utc(req.body.CREATE_AT, "DD/MM/YYYY h:mm:ss"), // adjust to current time
+          createAt: moment.utc(req.body.createAt, "DD/MM/YYYY h:mm:ss"), // adjust to current time
         });
         await diagnostic.save();
       } else {

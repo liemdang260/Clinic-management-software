@@ -52,13 +52,13 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 const {
-  ACCOUNT,
-  EMPLOYEE,
-  POSITION,
-  APPOINTMENT_STATUS,
-  APPOINTMENT,
+  Account,
+  Employee,
+  Position,
+  AppointmentStatus,
+  Appointment,
   Patient,
-  TYPE_OF_EXAMINATION,
+  TypeOfExamination,
 } = db;
 
 //TODO remove this line
@@ -67,11 +67,11 @@ export default db;
 export {
   sequelize,
   Sequelize,
-  ACCOUNT,
-  EMPLOYEE,
-  POSITION,
-  APPOINTMENT_STATUS,
-  APPOINTMENT,
+  Account,
+  Employee,
+  Position,
+  AppointmentStatus,
+  Appointment,
   Patient,
-  TYPE_OF_EXAMINATION,
+  TypeOfExamination,
 };

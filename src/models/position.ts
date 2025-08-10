@@ -1,25 +1,28 @@
 import { Model, Sequelize, DataTypes } from "sequelize";
 export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
-  return POSITION.initModel(sequelize, dataTypes);
+  return Position.initModel(sequelize, dataTypes);
 };
 
-class POSITION extends Model {
+class Position extends Model {
   static initModel(sequelize: Sequelize, dataTypes: typeof DataTypes) {
     return super.init(
       {
-        POSITION_ID: {
+        positionId: {
           autoIncrement: true,
           type: dataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
+          field: "POSITION_ID",
         },
-        POSITION_NAME: {
+        positionName: {
           type: dataTypes.STRING(30),
           allowNull: true,
+          field: "POSITION_NAME",
         },
-        SPECIALTY: {
+        specialty: {
           type: dataTypes.STRING(200),
           allowNull: true,
+          field: "SPECIALTY",
         },
       },
       {
@@ -37,7 +40,7 @@ class POSITION extends Model {
       },
     );
   }
-  static associate(this: any, { EMPLOYEE }: any) {
-    this.hasMany(EMPLOYEE, { as: "EMPLOYEES", foreignKey: "POSITION" });
+  static associate(this: any, { Employee }: any) {
+    this.hasMany(Employee, { as: "employees", foreignKey: "positionId" });
   }
 }

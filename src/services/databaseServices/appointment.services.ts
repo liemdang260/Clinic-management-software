@@ -1,4 +1,4 @@
-import { APPOINTMENT } from "../../models/index.js";
+import { Appointment } from "../../models/index.js";
 import { errorMessage } from "../customError.js";
 import { Op } from "sequelize";
 
@@ -14,8 +14,8 @@ class AppointmentService {
 
   async getAllAppointment() {
     try {
-      return await APPOINTMENT.findAll({
-        include: ["patient", "DOCTOR"],
+      return await Appointment.findAll({
+        include: ["patient", "doctor"],
       });
     } catch (error) {
       throw errorMessage.serverError;
@@ -24,12 +24,12 @@ class AppointmentService {
 
   async createAppointMent(appointmentInfo) {
     const requiredFields = [
-      "CREATE_AT",
-      "TIME",
-      "PATIENT_ID",
-      "TYPE_ID",
-      "STATUS_ID",
-      "DOCTOR_ID",
+      "createAt",
+      "time",
+      "patientId",
+      "typeId",
+      "statusId",
+      "doctorId",
     ];
     for (const field of requiredFields) {
       if (!appointmentInfo[field]) {
@@ -37,7 +37,7 @@ class AppointmentService {
       }
     }
     try {
-      const appointment = new APPOINTMENT(appointmentInfo);
+      const appointment = new Appointment(appointmentInfo);
       await appointment.save();
       return appointment;
     } catch (error) {
@@ -48,9 +48,9 @@ class AppointmentService {
 
   async getAllAppointmentRequest() {
     try {
-      return APPOINTMENT.findAll({
+      return Appointment.findAll({
         where: {
-          [Op.or]: [{ STATUS_ID: 1 }, { STATUS_ID: 2 }],
+          [Op.or]: [{ statusId: 1 }, { statusId: 2 }],
         },
         include: ["patient"],
       });

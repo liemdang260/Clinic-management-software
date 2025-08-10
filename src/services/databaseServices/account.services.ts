@@ -1,4 +1,4 @@
-import { ACCOUNT } from "../../models/index.js";
+import { Account } from "../../models/index.js";
 
 class AccountServices {
   static _instance;
@@ -12,9 +12,9 @@ class AccountServices {
 
   async findAccoutByUsername(username = "", option = {}) {
     try {
-      const accounts = await ACCOUNT.findAll({
+      const accounts = await Account.findAll({
         where: {
-          USERNAME: username,
+          username: username,
         },
         ...option,
       });

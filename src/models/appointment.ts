@@ -1,57 +1,56 @@
 import { Model, Sequelize, DataTypes } from "sequelize";
 export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
-  return APPOINTMENT.initModel(sequelize, dataTypes);
+  return Appointment.initModel(sequelize, dataTypes);
 };
 
-class APPOINTMENT extends Model {
+class Appointment extends Model {
   static initModel(sequelize: Sequelize, dataTypes: typeof DataTypes) {
     return super.init(
       {
-        APPOINTMENT_ID: {
+        appointmentId: {
           autoIncrement: true,
           type: dataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
+          field: "APPOINTMENT_ID",
         },
-        CREATE_AT: {
-          type: dataTypes.DATE,
-          allowNull: false,
-        },
-        TIME: {
-          type: dataTypes.DATE,
-          allowNull: false,
-        },
-        PATIENT_ID: {
+        createAt: { type: dataTypes.DATE, allowNull: false, field: "CREATE_AT" },
+        time: { type: dataTypes.DATE, allowNull: false, field: "TIME" },
+        patientId: {
           type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "PATIENT",
             key: "PATIENT_ID",
           },
+          field: "PATIENT_ID",
         },
-        TYPE_ID: {
+        typeId: {
           type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "TYPE_OF_EXAMINATION",
             key: "TYPE_ID",
           },
+          field: "TYPE_ID",
         },
-        STATUS_ID: {
+        statusId: {
           type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "APPOINTMENT_STATUS",
             key: "STATUS_ID",
           },
+          field: "STATUS_ID",
         },
-        DOCTOR_ID: {
+        doctorId: {
           type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "EMPLOYEE",
             key: "EMPLOYEE_ID",
           },
+          field: "DOCTOR_ID",
         },
       },
       {
@@ -92,17 +91,17 @@ class APPOINTMENT extends Model {
 
   static associate(
     this: any,
-    { EMPLOYEE, APPOINTMENT_STATUS, Patient, TYPE_OF_EXAMINATION }: any,
+    { Employee, AppointmentStatus, Patient, TypeOfExamination }: any,
   ) {
-    this.belongsTo(APPOINTMENT_STATUS, {
-      as: "STATUS",
-      foreignKey: "STATUS_ID",
+    this.belongsTo(AppointmentStatus, {
+      as: "status",
+      foreignKey: "statusId",
     });
-    this.belongsTo(EMPLOYEE, { as: "DOCTOR", foreignKey: "DOCTOR_ID" });
-    this.belongsTo(Patient, { as: "patient", foreignKey: "PATIENT_ID" });
-    this.belongsTo(TYPE_OF_EXAMINATION, {
-      as: "TYPE",
-      foreignKey: "TYPE_ID",
+    this.belongsTo(Employee, { as: "doctor", foreignKey: "doctorId" });
+    this.belongsTo(Patient, { as: "patient", foreignKey: "patientId" });
+    this.belongsTo(TypeOfExamination, {
+      as: "type",
+      foreignKey: "typeId",
     });
   }
 }
