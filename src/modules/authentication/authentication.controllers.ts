@@ -4,9 +4,10 @@ import {
 } from "./authentication.methods.js";
 import { AccountServices } from "../../services/databaseServices/account.services.js";
 import { errorMessage } from "../../services/customError.js";
+import type { LoginRequest } from "../../interfaces/auth.interface.js";
 
 const handleLogin = async (req, res, next) => {
-  const { username, password } = req.body;
+  const { username, password } = req.body as LoginRequest;
   try {
     const account = await AccountServices.instance.findAccoutByUsername(
       username,
