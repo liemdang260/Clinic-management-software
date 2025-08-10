@@ -1,44 +1,44 @@
-import Sequelize from "sequelize";
-export default (sequelize, DataTypes) => {
-  return EMPLOYEE.init(sequelize, DataTypes);
+import { Model, Sequelize, DataTypes } from "sequelize";
+export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
+  return EMPLOYEE.initModel(sequelize, dataTypes);
 };
 
-class EMPLOYEE extends Sequelize.Model {
-  static init(sequelize, DataTypes) {
+class EMPLOYEE extends Model {
+  static initModel(sequelize: Sequelize, dataTypes: typeof DataTypes) {
     return super.init(
       {
         EMPLOYEE_ID: {
           autoIncrement: true,
-          type: DataTypes.INTEGER,
+          type: dataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
         },
         EMPLOYEE_NAME: {
-          type: DataTypes.STRING(30),
+          type: dataTypes.STRING(30),
           allowNull: true,
         },
         IDENTITY_NUMBER: {
-          type: DataTypes.STRING(11),
+          type: dataTypes.STRING(11),
           allowNull: true,
         },
         PHONE: {
-          type: DataTypes.STRING(11),
+          type: dataTypes.STRING(11),
           allowNull: true,
         },
         GENDER: {
-          type: DataTypes.BOOLEAN,
+          type: dataTypes.BOOLEAN,
           allowNull: true,
         },
         DATE_OF_BIRTH: {
-          type: DataTypes.DATEONLY,
+          type: dataTypes.DATEONLY,
           allowNull: true,
         },
         EMPLOYEE_ADDRESS: {
-          type: DataTypes.STRING(50),
+          type: dataTypes.STRING(50),
           allowNull: true,
         },
         POSITION: {
-          type: DataTypes.INTEGER,
+          type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "POSITION",
@@ -46,11 +46,11 @@ class EMPLOYEE extends Sequelize.Model {
           },
         },
         START_WORK_DATE: {
-          type: DataTypes.DATEONLY,
+          type: dataTypes.DATEONLY,
           allowNull: true,
         },
         SALARY: {
-          type: DataTypes.INTEGER,
+          type: dataTypes.INTEGER,
           allowNull: true,
         },
       },
@@ -75,13 +75,16 @@ class EMPLOYEE extends Sequelize.Model {
     );
   }
 
-  static associate({ ACCOUNT, POSITION, APPOINTMENT }) {
-    EMPLOYEE.belongsTo(POSITION, {
+  static associate(
+    this: any,
+    { ACCOUNT, POSITION, APPOINTMENT }: any,
+  ) {
+    this.belongsTo(POSITION, {
       as: "POSITIONS",
       foreignKey: "POSITION",
     });
-    EMPLOYEE.hasOne(ACCOUNT, { as: "ACCOUNT", foreignKey: "EMPLOYEE_ID" });
-    EMPLOYEE.hasMany(APPOINTMENT, {
+    this.hasOne(ACCOUNT, { as: "ACCOUNT", foreignKey: "EMPLOYEE_ID" });
+    this.hasMany(APPOINTMENT, {
       as: "appointments",
       foreignKey: "DOCTOR_ID",
     });

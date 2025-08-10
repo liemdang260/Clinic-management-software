@@ -1,5 +1,15 @@
+interface CustomErrorOptions {
+  code: number;
+  name?: string;
+  message?: string;
+}
+
 class CustomError {
-  constructor({ code, name = "", message = "" }) {
+  code: number;
+  name: string;
+  message: string;
+
+  constructor({ code, name = "", message = "" }: CustomErrorOptions) {
     this.code = code;
     this.name = name;
     this.message = message;
