@@ -23,8 +23,21 @@ class AppointmentService {
   }
 
   async createAppointMent(appointmentInfo) {
+    const requiredFields = [
+      "CREATE_AT",
+      "TIME",
+      "PATIENT_ID",
+      "TYPE_ID",
+      "STATUS_ID",
+      "DOCTOR_ID",
+    ];
+    for (const field of requiredFields) {
+      if (!appointmentInfo[field]) {
+        throw ERROR_MESSAGE.emptyRequestBody;
+      }
+    }
     try {
-      const appointment = new APPOINTMENT({ appointmentInfo });
+      const appointment = new APPOINTMENT(appointmentInfo);
       await appointment.save();
       return appointment;
     } catch (error) {

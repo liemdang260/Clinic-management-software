@@ -57,17 +57,18 @@ const controller = () => {
   const changPassword = async (req, res) => {
     console.log(req.userInfo);
     try {
+      const oldPassHash = await enCryptPassword(req.body.oldPass);
       const account = await ACCOUNT.findOne({
         where: {
           [Op.and]: [
             { USERNAME: req.userInfo.username },
-            { PASSWORD: enCryptPassword(req.body.oldPass) },
+            { PASSWORD: oldPassHash },
           ],
         },
       });
       if (!account) return res.status(409).send("Sai mật khẩu");
       console.log(account);
-      account.PASSWORD = enCryptPassword(req.body.newPass);
+      account.PASSWORD = await enCryptPassword(req.body.newPass);
       await account.save();
       return res.send("Đổi mật khẩu thành công");
     } catch (error) {

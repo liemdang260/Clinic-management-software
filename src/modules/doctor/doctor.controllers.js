@@ -44,7 +44,7 @@ const controller = () => {
         });
         await prescription.save();
         const items = req.body.PRESCRIPTION;
-        items.map(async (item) => {
+        for (const item of items) {
           const prescription_item = new PRESCRIPTION_ITEM({
             PRESCRIPTION_ID: prescription.PRESCRIPTION_ID,
             DRUG_NAME: item.DRUG_NAME,
@@ -52,7 +52,7 @@ const controller = () => {
             INSTRUCTION: item.INSTRUCTION,
           });
           await prescription_item.save();
-        });
+        }
         diagnostic.SYMPTOM = req.body.SYMPTOM;
         diagnostic.PRESCRIPTION = prescription.PRESCRIPTION_ID;
         // diagnostic.RE_EXAMINATION = req.body.RE_EXAMINATION
@@ -76,7 +76,7 @@ const controller = () => {
     }
   };
 
-  const getStackByRoom = (req, res) => {};
+  const getStackByRoom = () => {};
 
   return {
     getRoom,

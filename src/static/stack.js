@@ -1,13 +1,12 @@
 import database from "../models/index.js";
 
-const { sequelize, APPOINTMENT } = database;
+const { sequelize } = database;
 import { dateParse, today } from "../constants/date.js";
-import { QueryTypes, or } from "sequelize";
+import { QueryTypes } from "sequelize";
 import socket from "../services/socket.io.js";
-const io = socket.io;
 
 const emitChange = () => {
-  io().emit("diagnostic-stack-change", {
+  socket.getIO().emit("diagnostic-stack-change", {
     room1: room1.getPatientStack(),
     room2: room2.getPatientStack(),
   });
@@ -50,7 +49,7 @@ class Stack {
     return this.order;
   }
 
-  changeTime(pnum, time) {}
+  changeTime() {}
   changeStatus(order, status) {
     // if (this.patientStack[order] && this.patientStack[order] != 'appointment') {
     //     this.patientStack[order].status = status
@@ -75,15 +74,15 @@ class Stack {
   }
 
   async initAppointment() {
-    let appointmentToday = await sequelize.query(
+    const appointmentToday = await sequelize.query(
       `select * from appointment WHERE CONVERT(VARCHAR(10), TIMES, 103) = ?`,
       {
         replacements: [dateParse(new Date())],
         type: QueryTypes.SELECT,
-      }
+      },
     );
     appointmentToday.map((appointment) => {
-      let date = new Date();
+      const date = new Date();
       date.setHours(appointment.TIMES.getUTCHours());
       date.setMinutes(appointment.TIMES.getUTCMinutes());
       date.setSeconds(appointment.TIMES.getUTCSeconds());

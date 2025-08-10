@@ -1,7 +1,7 @@
 import database from "../../models/index.js";
 import { enCryptPassword } from "../authentication/authentication.methods.js";
 
-const { sequelize, EMPLOYEE, SERVICE, ACCOUNT } = database;
+const { EMPLOYEE, SERVICE, ACCOUNT } = database;
 
 import moment from "moment";
 const controller = () => {
@@ -21,10 +21,11 @@ const controller = () => {
       });
       await employee.save();
 
+      const hashedPassword = await enCryptPassword(req.body.PASSWORD);
       const account = new ACCOUNT({
         EMPLOYEE_ID: employee.EMPLOYEE_ID,
         USERNAME: req.body.USERNAME,
-        PASSWORD: enCryptPassword(req.body.PASSWORD),
+        PASSWORD: hashedPassword,
         ISACTIVE: true,
         ROLE: req.body.POSITION,
       });
