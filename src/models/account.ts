@@ -1,13 +1,13 @@
 import { Model, Sequelize, DataTypes } from "sequelize";
 export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
-  return ACCOUNT.initModel(sequelize, dataTypes);
+  return Account.initModel(sequelize, dataTypes);
 };
 
-class ACCOUNT extends Model {
+class Account extends Model {
   static initModel(sequelize: Sequelize, dataTypes: typeof DataTypes) {
     return super.init(
       {
-        EMPLOYEE_ID: {
+        employeeId: {
           type: dataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
@@ -15,11 +15,12 @@ class ACCOUNT extends Model {
             model: "EMPLOYEE",
             key: "EMLOYEE_ID",
           },
+          field: "EMPLOYEE_ID",
         },
-        USERNAME: { type: dataTypes.STRING(30), allowNull: false },
-        PASSWORD: { type: dataTypes.STRING(50), allowNull: false },
-        ISACTIVE: { type: dataTypes.BOOLEAN, allowNull: false },
-        ROLE: { type: dataTypes.TINYINT, allowNull: false },
+        username: { type: dataTypes.STRING(30), allowNull: false, field: "USERNAME" },
+        password: { type: dataTypes.STRING(50), allowNull: false, field: "PASSWORD" },
+        isActive: { type: dataTypes.BOOLEAN, allowNull: false, field: "ISACTIVE" },
+        role: { type: dataTypes.TINYINT, allowNull: false, field: "ROLE" },
       },
       {
         sequelize,
@@ -37,7 +38,7 @@ class ACCOUNT extends Model {
     );
   }
 
-  static associate(this: any, { EMPLOYEE }: any) {
-    this.belongsTo(EMPLOYEE, { as: "EMPLOYEE", foreignKey: "EMPLOYEE_ID" });
+  static associate(this: any, { Employee }: any) {
+    this.belongsTo(Employee, { as: "employee", foreignKey: "employeeId" });
   }
 }

@@ -1,8 +1,8 @@
 import database from "../../models/index.js";
-const {
+  const {
   sequelize,
-  APPOINTMENT,
-  PATIENT,
+  Appointment,
+  Patient,
   DIAGNOSTIC,
   APPOINTMENTREQUEST,
   SERVICEFORDIAGNOSTIC,
@@ -11,24 +11,24 @@ import diagnosticStack from "../../static/stack.js";
 import moment from "moment";
 import { Op, QueryTypes } from "sequelize";
 import { AppointmentService } from "../../services/databaseServices/appointment.services.js";
-import { ERROR_MESSAGE } from "../../services/customError.js";
+import { errorMessage } from "../../services/customError.js";
 import { PatientService } from "../../services/databaseServices/patient.services.js";
 
 const controller = () => {
   const createAppointment = async (req, res) => {
     try {
-      if (!req.body) throw ERROR_MESSAGE.emptyRequestBody;
+      if (!req.body) throw errorMessage.emptyRequestBody;
       console.log(req.body);
 
       const { patient: patientInfo, appointment: appointmentInfo } = req.body;
-      const { id, identity_number: identityNumber } = patientInfo;
+      const { id, identityNumber } = patientInfo;
 
       let patientHasExist = false;
       let patientId = id;
 
       if (id) {
         const patient = await PatientService.instance.getPatientById(id);
-        if (!patient) throw ERROR_MESSAGE.invalidPatientId;
+        if (!patient) throw errorMessage.invalidPatientId;
         else {
           patientHasExist = true;
         }
@@ -46,7 +46,7 @@ const controller = () => {
           const newPatient = PatientService.instance.addNewPatient({
             patientInfo,
           });
-          patientId = newPatient.PATIENT_ID;
+          patientId = newPatient.patientId;
         }
       }
       const appointment = await AppointmentService.instance.createAppointMent({
@@ -66,7 +66,7 @@ const controller = () => {
       return res.json(appointment);
     } catch (e) {
       console.log(e);
-      throw ERROR_MESSAGE.serverError;
+      throw errorMessage.serverError;
     }
   };
 
@@ -74,9 +74,9 @@ const controller = () => {
     try {
       const fromday = req.body.fromday;
       // const today = req.body.fromday;
-      const appointment = await APPOINTMENT.findAll({
-        //where: { [Op.and]: [ { CREATE_AT: { [Op.gte]: fromday } }, { CREATE_AT: { [Op.lte]: today }} ] }
-        where: { CREATE_AT: { [Op.gte]: fromday } },
+      const appointment = await Appointment.findAll({
+        //where: { [Op.and]: [ { createAt: { [Op.gte]: fromday } }, { createAt: { [Op.lte]: today }} ] }
+        where: { createAt: { [Op.gte]: fromday } },
       });
       if (appointment) {
         return res.json(appointment);
@@ -110,9 +110,9 @@ const controller = () => {
   const getAppointmentById = async (req, res) => {
     const id = req.params.id;
     try {
-      const appointment = await APPOINTMENT.findOne({
+      const appointment = await Appointment.findOne({
         where: {
-          APPOINTMENT_ID: id,
+          appointmentId: id,
         },
       });
       if (appointment) return res.json(appointment);
@@ -126,19 +126,19 @@ const controller = () => {
   const updateAppointment = async (req, res) => {
     try {
       const id = req.params.id;
-      const appointment = await APPOINTMENT.findOne({
-        where: { APPOINTMENT_ID: id },
+      const appointment = await Appointment.findOne({
+        where: { appointmentId: id },
       });
       if (appointment) {
-        appointment.DOCTOR_ID = req.body.DOCTOR_ID
-          ? req.body.DOCTOR_ID
-          : appointment.DOCTOR_ID;
-        appointment.TIMES = req.body.TIMES
-          ? moment.utc(req.body.TIMES, "DD/MM/YYYY h:mm:ss")
-          : appointment.TIMES;
-        appointment.PATIENT_ID = req.body.PATIENT_ID
-          ? req.body.PATIENT_ID
-          : appointment.PATIENT_ID;
+        appointment.doctorId = req.body.doctorId
+          ? req.body.doctorId
+          : appointment.doctorId;
+        appointment.time = req.body.time
+          ? moment.utc(req.body.time, "DD/MM/YYYY h:mm:ss")
+          : appointment.time;
+        appointment.patientId = req.body.patientId
+          ? req.body.patientId
+          : appointment.patientId;
         await appointment.save();
         return res.status(200).send("Cập nhật thành công!");
       }
@@ -151,8 +151,8 @@ const controller = () => {
   const deleteAppointment = async (req, res) => {
     try {
       const id = req.params.id;
-      const appointment = await APPOINTMENT.findOne({
-        where: { APPOINTMENT_ID: id },
+      const appointment = await Appointment.findOne({
+        where: { appointmentId: id },
       });
       if (appointment) {
         await appointment.destroy();
@@ -218,18 +218,18 @@ const controller = () => {
           message: "Không để ô trống",
         });
       }
-      const identity_number = req.body.IDENTITY_NUMBER;
-      const pattient = await PATIENT.findOne({
-        where: { IDENTITY_NUMBER: identity_number },
+      const identityNumber = req.body.identityNumber;
+      const pattient = await Patient.findOne({
+        where: { identityNumber: identityNumber },
       });
       if (!pattient) {
-        const newPatinent = new PATIENT({
-          PATIENT_NAME: req.body.PATIENT_NAME,
-          IDENTITY_NUMBER: req.body.IDENTITY_NUMBER,
-          PHONE: req.body.PHONE,
-          GENDER: req.body.GENDER,
-          DATE_OF_BIRTH: moment(req.body.DATE_OF_BIRTH, "DD/MM/YYYY"),
-          ADDRESS: req.body.ADDRESS,
+        const newPatinent = new Patient({
+          patientName: req.body.patientName,
+          identityNumber: req.body.identityNumber,
+          phone: req.body.phone,
+          gender: req.body.gender,
+          dateOfBirth: moment(req.body.dateOfBirth, "DD/MM/YYYY"),
+          address: req.body.address,
         });
         await newPatinent.save();
       } else {
@@ -244,7 +244,7 @@ const controller = () => {
 
   const getAllPatient = async (req, res) => {
     try {
-      const patient = await PATIENT.findAll({});
+      const patient = await Patient.findAll({});
       return res.json(patient);
     } catch (e) {
       return res.status(500).send("Lỗi sever!");
@@ -254,8 +254,8 @@ const controller = () => {
   const getPatientById = async (req, res) => {
     try {
       const id = req.params.id;
-      const patient = await PATIENT.findOne({
-        where: { PATIENT_ID: id },
+      const patient = await Patient.findOne({
+        where: { patientId: id },
       });
       if (patient) {
         return res.json(patient);
@@ -271,45 +271,45 @@ const controller = () => {
   const updatePatient = async (req, res) => {
     try {
       const id = req.params.id;
-      const patient = await PATIENT.findOne({
-        where: { PATIENT_ID: id },
+      const patient = await Patient.findOne({
+        where: { patientId: id },
       });
       let cmnd;
-      const identityNumber = req.body.IDENTITY_NUMBER;
+      const identityNumber = req.body.identityNumber;
       // check whether the ID number already exists
-      const checkIdentity_number = async (condition) => {
+      const checkIdentityNumber = async (condition) => {
         try {
-          const oldIdentity_number = await PATIENT.findOne(condition);
-          if (!oldIdentity_number) {
+          const oldIdentityNumber = await Patient.findOne(condition);
+          if (!oldIdentityNumber) {
             return null;
           }
-          return oldIdentity_number;
+          return oldIdentityNumber;
         } catch (error) {
           console.log(error);
           throw Error;
         }
       };
       try {
-        cmnd = await checkIdentity_number({
-          where: { IDENTITY_NUMBER: identityNumber },
+        cmnd = await checkIdentityNumber({
+          where: { identityNumber: identityNumber },
         });
       } catch (error) {
         console.log(error);
         throw Error;
       }
       if (!cmnd) {
-        patient.PATIENT_NAME = req.body.PATIENT_NAME
-          ? req.body.PATIENT_NAME
-          : patient.PATIENT_NAME;
-        patient.IDENTITY_NUMBER = req.body.IDENTITY_NUMBER
-          ? req.body.IDENTITY_NUMBER
-          : patient.IDENTITY_NUMBER;
-        patient.PHONE = req.body.PHONE ? req.body.PHONE : patient.PHONE;
-        patient.GENDER = req.body.GENDER ? req.body.GENDER : patient.GENDER;
-        patient.DATE_OF_BIRTH = req.body.DATE_OF_BIRTH
-          ? moment(req.body.DATE_OF_BIRTH, "DD/MM/YYYY")
-          : patient.DATE_OF_BIRTH;
-        patient.ADDRESS = req.body.ADDRESS ? req.body.ADDRESS : patient.ADDRESS;
+        patient.patientName = req.body.patientName
+          ? req.body.patientName
+          : patient.patientName;
+        patient.identityNumber = req.body.identityNumber
+          ? req.body.identityNumber
+          : patient.identityNumber;
+        patient.phone = req.body.phone ? req.body.phone : patient.phone;
+        patient.gender = req.body.gender ? req.body.gender : patient.gender;
+        patient.dateOfBirth = req.body.dateOfBirth
+          ? moment(req.body.dateOfBirth, "DD/MM/YYYY")
+          : patient.dateOfBirth;
+        patient.address = req.body.address ? req.body.address : patient.address;
         await patient.save();
         return res.status(200).send("Cập nhật thành công!");
       } else {
@@ -324,8 +324,8 @@ const controller = () => {
   const deletePatient = async (req, res) => {
     try {
       const id = req.params.id;
-      const patient = await PATIENT.findOne({
-        where: { PATIENT_ID: id },
+      const patient = await Patient.findOne({
+        where: { patientId: id },
       });
       if (patient) {
         await patient.destroy();
@@ -342,36 +342,36 @@ const controller = () => {
     console.log(req.body);
     try {
       let patient;
-      if (req.body.PATIENT_ID) {
-        patient = await PATIENT.findOne({
+      if (req.body.patientId) {
+        patient = await Patient.findOne({
           where: {
-            PATIENT_ID: req.body.PATIENT_ID,
+            patientId: req.body.patientId,
           },
         });
       } else {
-        patient = await PATIENT.findOne({
+        patient = await Patient.findOne({
           where: {
             [Op.or]: [
-              { PHONE: req.body.PHONE },
-              { IDENTITY_NUMBER: req.body.IDENTITY_NUMBER },
+              { phone: req.body.phone },
+              { identityNumber: req.body.identityNumber },
             ],
           },
         });
         if (!patient) {
-          patient = new PATIENT({
-            PATIENT_NAME: req.body.PATIENT_NAME,
-            IDENTITY_NUMBER: req.body.IDENTITY_NUMBER,
-            PHONE: req.body.PHONE,
-            GENDER: req.body.GENDER,
-            DATE_OF_BIRTH: moment(req.body.DATE_OF_BIRTH, "DD/MM/YYYY"),
-            ADDRESS: req.body.ADDRESS,
-            OCCUPATION: req.body.OCCUPATION,
+          patient = new Patient({
+            patientName: req.body.patientName,
+            identityNumber: req.body.identityNumber,
+            phone: req.body.phone,
+            gender: req.body.gender,
+            dateOfBirth: moment(req.body.dateOfBirth, "DD/MM/YYYY"),
+            address: req.body.address,
+            occupation: req.body.occupation,
           });
           await patient.save();
         }
       }
       const diagnostic = new DIAGNOSTIC({
-        PATIENT_ID: patient.PATIENT_ID,
+        patientId: patient.patientId,
         CREATE_AT: moment.utc(req.body.CREATE_AT, "DD/MM/YYYY h:mm:ss"),
         DOCTOR_ID: req.body.DOCTOR_ID,
         DIAGNOSTIC_FEE: req.body.DIAGNOSTIC_FEE,
@@ -391,7 +391,7 @@ const controller = () => {
         where: {
           DIAGNOSTIC_ID: diagnostic.DIAGNOSTIC_ID,
         },
-        include: ["DOCTOR", "PATIENT", "SERVICE_ID_SERVICEs"],
+        include: ["DOCTOR", "patient", "SERVICE_ID_SERVICEs"],
       });
       const order = pushDiagnosticStack(lastDiagnostic, 1);
       console.log(order);
@@ -405,7 +405,7 @@ const controller = () => {
   const getAllDiagnostic = async (req, res) => {
     try {
       const diagnostic = await DIAGNOSTIC.findAll({
-        include: ["PATIENT"],
+        include: ["Patient"],
       });
       return res.json(diagnostic);
     } catch (error) {
@@ -437,9 +437,9 @@ const controller = () => {
         where: { DIAGNOSTIC_ID: id },
       });
       if (diagnostic) {
-        diagnostic.PATIENT_ID = req.body.PATIENT_ID
-          ? req.body.PATIENT_ID
-          : diagnostic.PATIENT_ID;
+        diagnostic.patientId = req.body.patientId
+          ? req.body.patientId
+          : diagnostic.patientId;
         diagnostic.DOCTOR_ID = req.body.DOCTOR_ID
           ? req.body.DOCTOR_ID
           : diagnostic.DOCTOR_ID;
@@ -472,17 +472,17 @@ const controller = () => {
   };
 
   const createDianosticNew = async (req, res) => {
-    //FromAPPOINTMENT
+    //FromAppointment
     try {
       const id = req.params.id;
-      const appointment = await APPOINTMENT.findOne({
-        where: { APPOINTMENT_ID: id },
+      const appointment = await Appointment.findOne({
+        where: { appointmentId: id },
       });
       if (appointment) {
         const diagnostic = DIAGNOSTIC.create({
-          DOCTOR_ID: appointment.DOCTOR_ID,
-          PATIENT_ID: appointment.PATIENT_ID,
-          CREATE_AT: moment.utc(req.body.CREATE_AT, "DD/MM/YYYY h:mm:ss"), // adjust to current time
+          doctorId: appointment.doctorId,
+          patientId: appointment.patientId,
+          createAt: moment.utc(req.body.createAt, "DD/MM/YYYY h:mm:ss"), // adjust to current time
         });
         await diagnostic.save();
       } else {

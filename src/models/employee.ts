@@ -1,58 +1,56 @@
 import { Model, Sequelize, DataTypes } from "sequelize";
 export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
-  return EMPLOYEE.initModel(sequelize, dataTypes);
+  return Employee.initModel(sequelize, dataTypes);
 };
 
-class EMPLOYEE extends Model {
+class Employee extends Model {
   static initModel(sequelize: Sequelize, dataTypes: typeof DataTypes) {
     return super.init(
       {
-        EMPLOYEE_ID: {
+        employeeId: {
           autoIncrement: true,
           type: dataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
+          field: "EMPLOYEE_ID",
         },
-        EMPLOYEE_NAME: {
+        employeeName: {
           type: dataTypes.STRING(30),
           allowNull: true,
+          field: "EMPLOYEE_NAME",
         },
-        IDENTITY_NUMBER: {
+        identityNumber: {
           type: dataTypes.STRING(11),
           allowNull: true,
+          field: "IDENTITY_NUMBER",
         },
-        PHONE: {
-          type: dataTypes.STRING(11),
-          allowNull: true,
-        },
-        GENDER: {
-          type: dataTypes.BOOLEAN,
-          allowNull: true,
-        },
-        DATE_OF_BIRTH: {
+        phone: { type: dataTypes.STRING(11), allowNull: true, field: "PHONE" },
+        gender: { type: dataTypes.BOOLEAN, allowNull: true, field: "GENDER" },
+        dateOfBirth: {
           type: dataTypes.DATEONLY,
           allowNull: true,
+          field: "DATE_OF_BIRTH",
         },
-        EMPLOYEE_ADDRESS: {
+        employeeAddress: {
           type: dataTypes.STRING(50),
           allowNull: true,
+          field: "EMPLOYEE_ADDRESS",
         },
-        POSITION: {
+        positionId: {
           type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "POSITION",
             key: "POSITION_ID",
           },
+          field: "POSITION",
         },
-        START_WORK_DATE: {
+        startWorkDate: {
           type: dataTypes.DATEONLY,
           allowNull: true,
+          field: "START_WORK_DATE",
         },
-        SALARY: {
-          type: dataTypes.INTEGER,
-          allowNull: true,
-        },
+        salary: { type: dataTypes.INTEGER, allowNull: true, field: "SALARY" },
       },
       {
         sequelize,
@@ -77,16 +75,16 @@ class EMPLOYEE extends Model {
 
   static associate(
     this: any,
-    { ACCOUNT, POSITION, APPOINTMENT }: any,
+    { Account, Position, Appointment }: any,
   ) {
-    this.belongsTo(POSITION, {
-      as: "POSITIONS",
-      foreignKey: "POSITION",
+    this.belongsTo(Position, {
+      as: "position",
+      foreignKey: "positionId",
     });
-    this.hasOne(ACCOUNT, { as: "ACCOUNT", foreignKey: "EMPLOYEE_ID" });
-    this.hasMany(APPOINTMENT, {
+    this.hasOne(Account, { as: "account", foreignKey: "employeeId" });
+    this.hasMany(Appointment, {
       as: "appointments",
-      foreignKey: "DOCTOR_ID",
+      foreignKey: "doctorId",
     });
   }
 }

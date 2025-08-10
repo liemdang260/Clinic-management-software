@@ -1,5 +1,5 @@
-import { PATIENT } from "../../models/index.js";
-import { ERROR_MESSAGE } from "../customError.js";
+import { Patient } from "../../models/index.js";
+import { errorMessage } from "../customError.js";
 
 class PatientService {
   static _instance;
@@ -13,30 +13,30 @@ class PatientService {
 
   async getPatientById(id) {
     try {
-      return await PATIENT.findOne({
-        where: { PATIENT_ID: id },
+      return await Patient.findOne({
+        where: { patientId: id },
       });
     } catch (error) {
-      throw ERROR_MESSAGE.serverError;
+      throw errorMessage.serverError;
     }
   }
 
   async getPatientByIdentityNumber(identityNumber) {
     try {
-      return await PATIENT.findOne({
-        where: { IDENTITY_NUMBER: identityNumber },
+      return await Patient.findOne({
+        where: { identityNumber: identityNumber },
       });
     } catch (error) {
-      throw ERROR_MESSAGE.serverError;
+      throw errorMessage.serverError;
     }
   }
 
   async addNewPatient(patientInfo) {
     try {
-      const patient = new PATIENT(patientInfo);
+      const patient = new Patient(patientInfo);
       await patient.save();
     } catch (error) {
-      throw ERROR_MESSAGE.serverError;
+      throw errorMessage.serverError;
     }
   }
 }

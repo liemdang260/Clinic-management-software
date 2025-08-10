@@ -30,7 +30,7 @@ class CustomError {
 
 export default CustomError;
 
-export const ERROR_MESSAGE = {
+export const errorMessage = {
   invalidGeneratedAccessToken: new CustomError({
     code: 500,
     name: "invalid GeneratedAccessToken",

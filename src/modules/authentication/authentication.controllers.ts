@@ -2,8 +2,8 @@ import {
   comparePassword,
   generateAccessToken,
 } from "./authentication.methods.js";
-import { AccountServices } from "../../services/databaseServices/ACCOUNT.services.js";
-import { ERROR_MESSAGE } from "../../services/customError.js";
+import { AccountServices } from "../../services/databaseServices/account.services.js";
+import { errorMessage } from "../../services/customError.js";
 
 const handleLogin = async (req, res, next) => {
   const { username, password } = req.body;
@@ -11,27 +11,27 @@ const handleLogin = async (req, res, next) => {
     const account = await AccountServices.instance.findAccoutByUsername(
       username,
       {
-        include: ["EMPLOYEE"],
+        include: ["employee"],
       },
     );
 
     if (!account) {
-      throw ERROR_MESSAGE.userDoesNotExist;
+      throw errorMessage.userDoesNotExist;
     }
 
-    if (!(await comparePassword(password, account.PASSWORD))) {
-      throw ERROR_MESSAGE.incorrectPassword;
+    if (!(await comparePassword(password, account.password))) {
+      throw errorMessage.incorrectPassword;
     }
 
     const access_token = generateAccessToken({
-      employee_id: account.EMPLOYEE_ID,
-      employee_name: account.EMPLOYEE.EMPLOYEE_NAME,
-      username: account.USERNAME,
-      is_active: account.ISACTIVE,
-      role: account.ROLE,
+      employee_id: account.employeeId,
+      employee_name: account.employee.employeeName,
+      username: account.username,
+      is_active: account.isActive,
+      role: account.role,
     });
 
-    if (!access_token) throw ERROR_MESSAGE.invalidGeneratedAccessToken;
+    if (!access_token) throw errorMessage.invalidGeneratedAccessToken;
 
     return res.json({
       access_token: access_token,
