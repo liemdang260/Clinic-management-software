@@ -2,6 +2,10 @@ import database from "../../models/index.js";
 import { enCryptPassword } from "../authentication/authentication.methods.js";
 import { Op } from "sequelize";
 import moment from "moment";
+import type {
+  UpdateProfileRequest,
+  ChangePasswordRequest,
+} from "../../interfaces/user.interface.js";
 
 const { Employee, Account, ROOM, SERVICE } = database;
 
@@ -25,27 +29,28 @@ const controller = () => {
 
   const updateProfileById = async (req, res) => {
     try {
+      const requestBody = req.body as UpdateProfileRequest;
       const id = req.userInfo.employee_id;
       const user = await Employee.findOne({
         where: { employeeId: id },
       });
       if (user) {
-        user.employeeName = req.body.employeeName
-          ? req.body.employeeName
+        user.employeeName = requestBody.employeeName
+          ? requestBody.employeeName
           : user.employeeName;
-        user.identityNumber = req.body.identityNumber
-          ? req.body.identityNumber
+        user.identityNumber = requestBody.identityNumber
+          ? requestBody.identityNumber
           : user.identityNumber;
-        user.phone = req.body.phone ? req.body.phone : user.phone;
-        user.gender = req.body.gender ? req.body.gender : user.gender;
-        user.dateOfBirth = req.body.dateOfBirth
-          ? moment(req.body.dateOfBirth, "DD/MM/YYYY")
+        user.phone = requestBody.phone ? requestBody.phone : user.phone;
+        user.gender = requestBody.gender ? requestBody.gender : user.gender;
+        user.dateOfBirth = requestBody.dateOfBirth
+          ? moment(requestBody.dateOfBirth, "DD/MM/YYYY")
           : user.dateOfBirth;
-        user.employeeAddress = req.body.employeeAddress
-          ? req.body.employeeAddress
+        user.employeeAddress = requestBody.employeeAddress
+          ? requestBody.employeeAddress
           : user.employeeAddress;
-        user.positionId = req.body.positionId
-          ? req.body.positionId
+        user.positionId = requestBody.positionId
+          ? requestBody.positionId
           : user.positionId;
         await user.save();
         return res.status(200).send("Cập nhật thành công!");
@@ -59,7 +64,8 @@ const controller = () => {
   const changPassword = async (req, res) => {
     console.log(req.userInfo);
     try {
-      const oldPassHash = await enCryptPassword(req.body.oldPass);
+      const body = req.body as ChangePasswordRequest;
+      const oldPassHash = await enCryptPassword(body.oldPass);
       const account = await Account.findOne({
         where: {
           [Op.and]: [
@@ -70,7 +76,7 @@ const controller = () => {
       });
       if (!account) return res.status(409).send("Sai mật khẩu");
       console.log(account);
-      account.password = await enCryptPassword(req.body.newPass);
+      account.password = await enCryptPassword(body.newPass);
       await account.save();
       return res.send("Đổi mật khẩu thành công");
     } catch (error) {

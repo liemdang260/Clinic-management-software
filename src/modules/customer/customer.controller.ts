@@ -1,11 +1,13 @@
 import database from "../../models/index.js";
-const { APPOINTMENTREQUEST, Patient } = database;
+const { APPOINTMENTREQUEST } = database;
 import moment from "moment";
+import type { AppointmentRequestPayload } from "../../interfaces/customer.interface.js";
+
 const controller = () => {
   const createAppointmentRequest = async (req, res) => {
     console.log(req.body);
-    const patientData = req.body.patient;
-    const appointmentData = req.body.appointment;
+    const { patient: patientData, appointment: appointmentData } =
+      req.body as AppointmentRequestPayload;
     try {
       const request = new APPOINTMENTREQUEST({
         createAt: new Date(),
