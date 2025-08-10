@@ -1,13 +1,16 @@
 import { Server } from "socket.io";
 // const stack = require('src/static/stack')
 
-const io = () => {
-  return io;
-};
+// Hold a reference to the socket.io instance once initialized
+let ioInstance;
 
+// Return the socket.io instance for use in other modules
+const io = () => ioInstance;
+
+// Initialize the socket.io server and store the instance
 const init = (server) => {
-  const io = new Server(server, { cors: { origin: "*" } });
-  io.on("connection", (socket) => {
+  ioInstance = new Server(server, { cors: { origin: "*" } });
+  ioInstance.on("connection", (socket) => {
     console.log(socket.id);
     socket.on("disconnect", () => {
       console.log(`${socket.id} is disconnected!`);
@@ -20,7 +23,7 @@ const init = (server) => {
     });
   });
 
-  return io;
+  return ioInstance;
 };
 
 export default { io, init };
