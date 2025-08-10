@@ -1,22 +1,19 @@
-import Sequelize from "sequelize";
-export default (sequelize, DataTypes) => {
-  return APPOINTMENT_STATUS.init(sequelize, DataTypes);
+import { Model, Sequelize, DataTypes } from "sequelize";
+export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
+  return APPOINTMENT_STATUS.initModel(sequelize, dataTypes);
 };
 
-class APPOINTMENT_STATUS extends Sequelize.Model {
-  static init(sequelize, DataTypes) {
+class APPOINTMENT_STATUS extends Model {
+  static initModel(sequelize: Sequelize, dataTypes: typeof DataTypes) {
     return super.init(
       {
         STATUS_ID: {
           autoIncrement: true,
-          type: DataTypes.INTEGER,
+          type: dataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
         },
-        STATUS_NAME: {
-          type: DataTypes.STRING(30),
-          allowNull: false,
-        },
+        STATUS_NAME: { type: dataTypes.STRING(30), allowNull: false },
       },
       {
         sequelize,
@@ -34,8 +31,8 @@ class APPOINTMENT_STATUS extends Sequelize.Model {
     );
   }
 
-  static associate({ APPOINTMENT }) {
-    APPOINTMENT_STATUS.hasMany(APPOINTMENT, {
+  static associate(this: any, { APPOINTMENT }: any) {
+    this.hasMany(APPOINTMENT, {
       as: "appointments",
       foreignKey: "STATUS_ID",
     });

@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import Sequelize from "sequelize";
+import { Sequelize, DataTypes } from "sequelize";
 import { fileURLToPath, pathToFileURL } from "url";
 import { createRequire } from "module";
 
@@ -12,7 +12,7 @@ const configFile = require("../config/config.json");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const config = configFile[env];
-const db = {};
+const db: any = {};
 
 let sequelize;
 if (config.use_env_variable) {
@@ -37,7 +37,7 @@ for (let i = 0; i < modelName.length; i++) {
   await import(
     pathToFileURL(path.join(__dirname, modelName[i])).toString()
   ).then((modelCreate) => {
-    const model = modelCreate.default(sequelize, Sequelize.DataTypes);
+    const model = modelCreate.default(sequelize, DataTypes);
     db[model.name] = model;
   });
 }

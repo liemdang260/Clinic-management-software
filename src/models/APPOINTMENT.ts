@@ -1,28 +1,28 @@
-import Sequelize from "sequelize";
-export default (sequelize, DataTypes) => {
-  return APPOINTMENT.init(sequelize, DataTypes);
+import { Model, Sequelize, DataTypes } from "sequelize";
+export default (sequelize: Sequelize, dataTypes: typeof DataTypes) => {
+  return APPOINTMENT.initModel(sequelize, dataTypes);
 };
 
-class APPOINTMENT extends Sequelize.Model {
-  static init(sequelize, DataTypes) {
+class APPOINTMENT extends Model {
+  static initModel(sequelize: Sequelize, dataTypes: typeof DataTypes) {
     return super.init(
       {
         APPOINTMENT_ID: {
           autoIncrement: true,
-          type: DataTypes.INTEGER,
+          type: dataTypes.INTEGER,
           allowNull: false,
           primaryKey: true,
         },
         CREATE_AT: {
-          type: DataTypes.DATE,
+          type: dataTypes.DATE,
           allowNull: false,
         },
         TIME: {
-          type: DataTypes.DATE,
+          type: dataTypes.DATE,
           allowNull: false,
         },
         PATIENT_ID: {
-          type: DataTypes.INTEGER,
+          type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "PATIENT",
@@ -30,7 +30,7 @@ class APPOINTMENT extends Sequelize.Model {
           },
         },
         TYPE_ID: {
-          type: DataTypes.INTEGER,
+          type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "TYPE_OF_EXAMINATION",
@@ -38,7 +38,7 @@ class APPOINTMENT extends Sequelize.Model {
           },
         },
         STATUS_ID: {
-          type: DataTypes.INTEGER,
+          type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "APPOINTMENT_STATUS",
@@ -46,7 +46,7 @@ class APPOINTMENT extends Sequelize.Model {
           },
         },
         DOCTOR_ID: {
-          type: DataTypes.INTEGER,
+          type: dataTypes.INTEGER,
           allowNull: false,
           references: {
             model: "EMPLOYEE",
@@ -90,19 +90,17 @@ class APPOINTMENT extends Sequelize.Model {
     );
   }
 
-  static associate({
-    EMPLOYEE,
-    APPOINTMENT_STATUS,
-    PATIENT,
-    TYPE_OF_EXAMINATION,
-  }) {
-    APPOINTMENT.belongsTo(APPOINTMENT_STATUS, {
+  static associate(
+    this: any,
+    { EMPLOYEE, APPOINTMENT_STATUS, PATIENT, TYPE_OF_EXAMINATION }: any,
+  ) {
+    this.belongsTo(APPOINTMENT_STATUS, {
       as: "STATUS",
       foreignKey: "STATUS_ID",
     });
-    APPOINTMENT.belongsTo(EMPLOYEE, { as: "DOCTOR", foreignKey: "DOCTOR_ID" });
-    APPOINTMENT.belongsTo(PATIENT, { as: "PATIENT", foreignKey: "PATIENT_ID" });
-    APPOINTMENT.belongsTo(TYPE_OF_EXAMINATION, {
+    this.belongsTo(EMPLOYEE, { as: "DOCTOR", foreignKey: "DOCTOR_ID" });
+    this.belongsTo(PATIENT, { as: "PATIENT", foreignKey: "PATIENT_ID" });
+    this.belongsTo(TYPE_OF_EXAMINATION, {
       as: "TYPE",
       foreignKey: "TYPE_ID",
     });

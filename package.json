@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
-    "test": "node src/test.js",
-    "format": "prettier --write ./**/*.{js,json}",
-    "lint": "npx eslint --fix ./**/*.{js,json}",
+    "build": "npx tsc",
+    "start": "npm run build && node dist/index.js",
+    "test": "npm run build && node dist/test.js",
+    "format": "prettier --write ./**/*.{ts,json}",
+    "lint": "npx eslint --fix ./**/*.{ts,json}",
     "createModel": "node_modules\\.bin\\sequelize-auto -c \"./src/config/config1.json\" -l es6 -o \"./src/models\" -t "
   },
   "repository": {
@@ -38,6 +39,7 @@
   "devDependencies": {
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "nodemon": "^2.0.13"
+    "nodemon": "^2.0.13",
+    "typescript": "^5.0.0"
   }
 }
