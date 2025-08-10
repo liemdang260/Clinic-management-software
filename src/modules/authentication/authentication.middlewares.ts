@@ -1,4 +1,4 @@
-import CustomError, { ERROR_MESSAGE } from "../../services/customError.js";
+import CustomError, { errorMessage } from "../../services/customError.js";
 import { decryptAccessToken } from "./authentication.methods.js";
 
 export const isAuth = (req, _, next) => {
@@ -6,13 +6,13 @@ export const isAuth = (req, _, next) => {
     const { access_token } = req.headers;
 
     if (!access_token) {
-      throw ERROR_MESSAGE.invalidAccessToken;
+      throw errorMessage.invalidAccessToken;
     }
 
     const verify = decryptAccessToken(access_token);
 
     if (!verify) {
-      throw ERROR_MESSAGE.invalidAccessToken;
+      throw errorMessage.invalidAccessToken;
     }
 
     req.userInfo = verify.payload;

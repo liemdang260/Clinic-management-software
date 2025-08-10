@@ -3,7 +3,7 @@ import {
   generateAccessToken,
 } from "./authentication.methods.js";
 import { AccountServices } from "../../services/databaseServices/ACCOUNT.services.js";
-import { ERROR_MESSAGE } from "../../services/customError.js";
+import { errorMessage } from "../../services/customError.js";
 
 const handleLogin = async (req, res, next) => {
   const { username, password } = req.body;
@@ -16,11 +16,11 @@ const handleLogin = async (req, res, next) => {
     );
 
     if (!account) {
-      throw ERROR_MESSAGE.userDoesNotExist;
+      throw errorMessage.userDoesNotExist;
     }
 
     if (!(await comparePassword(password, account.PASSWORD))) {
-      throw ERROR_MESSAGE.incorrectPassword;
+      throw errorMessage.incorrectPassword;
     }
 
     const access_token = generateAccessToken({
@@ -31,7 +31,7 @@ const handleLogin = async (req, res, next) => {
       role: account.ROLE,
     });
 
-    if (!access_token) throw ERROR_MESSAGE.invalidGeneratedAccessToken;
+    if (!access_token) throw errorMessage.invalidGeneratedAccessToken;
 
     return res.json({
       access_token: access_token,

@@ -57,7 +57,7 @@ const {
   POSITION,
   APPOINTMENT_STATUS,
   APPOINTMENT,
-  PATIENT,
+  Patient,
   TYPE_OF_EXAMINATION,
 } = db;
 
@@ -72,6 +72,6 @@ export {
   POSITION,
   APPOINTMENT_STATUS,
   APPOINTMENT,
-  PATIENT,
+  Patient,
   TYPE_OF_EXAMINATION,
 };

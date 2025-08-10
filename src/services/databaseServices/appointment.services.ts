@@ -1,5 +1,5 @@
 import { APPOINTMENT } from "../../models/index.js";
-import { ERROR_MESSAGE } from "../customError.js";
+import { errorMessage } from "../customError.js";
 import { Op } from "sequelize";
 
 class AppointmentService {
@@ -15,10 +15,10 @@ class AppointmentService {
   async getAllAppointment() {
     try {
       return await APPOINTMENT.findAll({
-        include: ["PATIENT", "DOCTOR"],
+        include: ["patient", "DOCTOR"],
       });
     } catch (error) {
-      throw ERROR_MESSAGE.serverError;
+      throw errorMessage.serverError;
     }
   }
 
@@ -33,7 +33,7 @@ class AppointmentService {
     ];
     for (const field of requiredFields) {
       if (!appointmentInfo[field]) {
-        throw ERROR_MESSAGE.emptyRequestBody;
+        throw errorMessage.emptyRequestBody;
       }
     }
     try {
@@ -42,7 +42,7 @@ class AppointmentService {
       return appointment;
     } catch (error) {
       console.log("service", error);
-      throw ERROR_MESSAGE.serverError;
+      throw errorMessage.serverError;
     }
   }
 
@@ -52,11 +52,11 @@ class AppointmentService {
         where: {
           [Op.or]: [{ STATUS_ID: 1 }, { STATUS_ID: 2 }],
         },
-        include: ["PATIENT"],
+        include: ["patient"],
       });
     } catch (error) {
       console.log(error);
-      throw ERROR_MESSAGE.serverError;
+      throw errorMessage.serverError;
     }
   }
 }

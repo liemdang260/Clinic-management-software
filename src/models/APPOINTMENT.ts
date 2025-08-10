@@ -92,14 +92,14 @@ class APPOINTMENT extends Model {
 
   static associate(
     this: any,
-    { EMPLOYEE, APPOINTMENT_STATUS, PATIENT, TYPE_OF_EXAMINATION }: any,
+    { EMPLOYEE, APPOINTMENT_STATUS, Patient, TYPE_OF_EXAMINATION }: any,
   ) {
     this.belongsTo(APPOINTMENT_STATUS, {
       as: "STATUS",
       foreignKey: "STATUS_ID",
     });
     this.belongsTo(EMPLOYEE, { as: "DOCTOR", foreignKey: "DOCTOR_ID" });
-    this.belongsTo(PATIENT, { as: "PATIENT", foreignKey: "PATIENT_ID" });
+    this.belongsTo(Patient, { as: "patient", foreignKey: "PATIENT_ID" });
     this.belongsTo(TYPE_OF_EXAMINATION, {
       as: "TYPE",
       foreignKey: "TYPE_ID",
